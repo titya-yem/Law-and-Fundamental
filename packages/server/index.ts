@@ -1,8 +1,25 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import cookiesParser from "cookie-parser"
+// import helmet from "helmet";
+// import morgan from "morgan"
+import connectDB from "./src/config/db";
+
 
 const app = express();
-dotenv.config();
+dotenv.config(); // anable to use env file
+connectDB() // connect to database
+
+// middleware
+app.use(cors({
+  origin: process.env.CLIENT_URI || "http://localhost:3000",
+  credentials: true,
+}))
+app.use(express.json());  // anable to read from body
+// app.use(helmet()); 
+// app.use(morgan("dev"));
+app.use(cookiesParser());
 
 app.get("/", (req, res) => {
   res.send("Lamdouy");
