@@ -1,0 +1,29 @@
+{
+  "name": "gov",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "scripts": {
+    "prettier": "bunx prettier . --write",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "3.8.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "create": "^0.5.5",
+    "vite": "^7.3.1"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
