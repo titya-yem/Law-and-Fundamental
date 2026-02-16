@@ -8,10 +8,12 @@
   },
   "scripts": {
     "prettier": "bunx prettier . --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev": "bun run index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "concurrently": "^9.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "3.8.1"
