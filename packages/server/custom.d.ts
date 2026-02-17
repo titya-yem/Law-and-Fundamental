@@ -1,9 +1,14 @@
-declare namespace Express {
-  export interface Request {
-    user?: {
-      id: string;
-      email: string;
-      role: string;
-    };
+import "express"
+
+declare global {
+  namespace Express {
+    interface UserPayload {
+      id: number
+      role: string
+    }
+
+    interface Request {
+      user?: UserPayload
+    }
   }
 }
