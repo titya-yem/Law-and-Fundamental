@@ -54,8 +54,28 @@ export const login: RequestHandler = async (req, res) => {
             { expiresIn: "4h"}
         )
 
-        res.json({ token });
+        // store token in httpOnly cookie
+        res.cookie("token", token, {
+            httpOnly: true,              // cannot be accessed by JS
+            // secure must change to true in production
+            secure: false,               // true in production (HTTPS)
+            sameSite: "lax",             // protects againts CSRF
+            maxAge: 15 * 60 * 1000,      // 15 minutes
+        })
+
+        res.json({ message: "Login successful" });
     } catch (error: any) {
         res.status(400).json({ message: error.message })
     }
+};
+
+export const logout: RequestHandler = (req, res) => {
+
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax"
+    });
+    
+    res.json({ message: "Logged out "});
 };

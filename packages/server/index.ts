@@ -11,7 +11,7 @@ dotenv.config(); // anable to use env file
 
 // middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  origin: process.env.CLIENT_URL || "http://localhost:8000",
   credentials: true,
 }))
 app.use(express.json());  // anable to read from body

@@ -8,19 +8,16 @@ export interface AuthRequest extends Request {
     user?: {
         id: number
         role: string
-  }
-}
-
-interface JwtPayloadCustom extends jwt.JwtPayload {
-  id: number
-  role: string
-}
+  };
+};
 
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
     // get authorization of headers from request
     // if it exists we split it and get the second one
     // EXPAMPLE: Bearer (token), so we use split method to get token only
-    const token = req.headers.authorization?.split(" ")[1]
+    // const token = req.headers.authorization?.split(" ")[1]
+    // but now we get token from cookie
+    const token = req.cookies.token;
 
     // if it doesn't exist = no login
     if (!token)
@@ -29,13 +26,13 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
     try {
         // then we decond it with jwt verify has token, JWT_SECRET
         // as id and role
-        const decoded = jwt.verify(token, JWT_SECRET) as JwtPayloadCustom & {
-            id: number
+        const decoded = jwt.verify(token, JWT_SECRET) as {
+            id: number;
             role: string
         };
 
-        // then assign decoded to req.user and next middleware
-        req.user = decoded;
+        // then assign decoded to req.user or attach to request
+        req.user = decoded;    
         next();
     } catch {
         return res.status(401).json({ message: "Invalid or expired token" })
