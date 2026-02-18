@@ -1,8 +1,8 @@
 import type { RequestHandler } from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import { registerSchema, loginSchema } from "../validations/user.validation"
-import { createUser, findUserByEmail } from "../models/user.model"
+import { registerSchema, loginSchema, roleSchema } from "../validations/user.validation"
+import { changeRole, createUser, findUserByEmail } from "../models/user.model"
 
 const JWT_SERECT = process.env.JWT_SECRET as string;
 
@@ -69,11 +69,25 @@ export const login: RequestHandler = async (req, res) => {
     }
 };
 
+export const updateRole: RequestHandler = async (req, res) => {
+    const { id } = req.params;
+    const data = roleSchema.parse(req.body);
+
+    try {
+        const updateRole = await changeRole( data.role, Number(id) );
+
+        res.status(200).json({ message: "Role updated", user: updateRole});
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+
+};
+
 export const logout: RequestHandler = (req, res) => {
 
     res.clearCookie("token", {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax"
     });
     

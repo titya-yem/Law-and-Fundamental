@@ -20,6 +20,17 @@ export const createUser = async ( name: string, email: string, hashedPassword: s
     return reuslt.rows[0];
 };
 
+export const changeRole = async (role:string, id: number) => {
+    const result = await pool.query (
+        `UPDATE users SET role = $1 WHERE id = $2
+         RETURNING id, name, role
+        `,
+        [role, id]
+    );
+
+    return result.rows[0];
+};
+
 // we need findUserByEmail because we must make sure user is not existed
 export const findUserByEmail = async (email: string) => {
     const reuslt = await pool.query (
