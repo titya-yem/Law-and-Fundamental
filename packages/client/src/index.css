@@ -123,3 +123,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+button.rt-Button:not(:disabled) {
+  cursor: pointer;
+}
