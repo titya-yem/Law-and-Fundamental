@@ -1,9 +1,21 @@
 import { motion } from 'framer-motion';
 import * as Separator from '@radix-ui/react-separator';
-import { NavbarLists } from '@/constants/NavbarLists';
+import {
+  NavbarPublic,
+  NavbarGuest,
+  NavbarPrivate,
+} from '@/constants/NavbarLists';
+import { useAuth } from '@/hooks/useAuth';
 
 const Footer = () => {
+  const { data: user, isLoading } = useAuth();
   const currentYear = new Date().getFullYear();
+
+  const allLinks = () => {
+    if (isLoading) return [];
+    if (user) return [...NavbarPublic, ...NavbarPrivate];
+    return [...NavbarPublic, ...NavbarGuest];
+  };
 
   return (
     <motion.footer
@@ -25,7 +37,7 @@ const Footer = () => {
           </motion.p>
 
           <nav className="flex flex-wrap items-center justify-center gap-6">
-            {NavbarLists.map((link) => (
+            {allLinks().map((link) => (
               <motion.a
                 key={link.label}
                 href={link.link}

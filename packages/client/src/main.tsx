@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
+import Case from './pages/Case';
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,9 @@ createRoot(document.getElementById('root')!).render(
                 <Route path="/login" element={<Login />} />
               </Route>
 
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />}>
+                <Route path="case/:id" element={<Case />} />
+              </Route>
             </Route>
           </Routes>
         </BrowserRouter>
