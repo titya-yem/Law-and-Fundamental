@@ -24,8 +24,8 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<Home />} />
 
               <Route element={<AuthLayout />}>
-                <Route path="register" element={<Register />} />
-                <Route path="login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
               </Route>
 
               <Route path="/dashboard" element={<Dashboard />} />
