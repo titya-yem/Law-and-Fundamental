@@ -8,12 +8,15 @@ import {
   Text,
 } from '@radix-ui/themes';
 import { Link } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { registerProps, type RegisterProps } from '@/types/RegisterTypes';
 
 const Register = () => {
+  const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
 
   const mutation = useMutation<AxiosResponse, AxiosError, RegisterProps>({
@@ -22,8 +25,10 @@ const Register = () => {
         withCredentials: true,
       }),
     onSuccess: () => {
-      alert('Registration successful! You can now login.');
+      toast.success('Registration successful! You can now login');
       formRef.current?.reset();
+
+      navigate('/login', { replace: true });
     },
     onError: (error: AxiosError) => {
       alert(error?.message ?? 'Unknown error');
