@@ -9,7 +9,7 @@ const getNavClass = ({ isActive }: { isActive: boolean }) =>
 
 const Navbar = () => {
   return (
-    <Container>
+    <Container className="px-4">
       <header>
         <Flex justify="between" align="center" py="2">
           <img
