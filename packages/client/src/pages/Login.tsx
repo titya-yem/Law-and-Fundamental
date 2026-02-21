@@ -9,15 +9,19 @@ import {
 } from '@radix-ui/themes';
 import { Link } from 'react-router';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { loginProps, type LoginProps } from '@/types/LoginTypes';
 import toast from 'react-hot-toast';
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
+import type { User } from '@/hooks/useAuth';
 
 const Login = () => {
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
+  const queryClient = useQueryClient(); // React Query client
 
   const mutation = useMutation<AxiosResponse, AxiosError, LoginProps>({
     mutationFn: (data: LoginProps) =>
@@ -25,8 +29,19 @@ const Login = () => {
         withCredentials: true,
       }),
     onSuccess: () => {
-      toast.success("'Login successful 🎉'");
+      toast.success('Login successful 🎉');
       formRef.current?.reset();
+
+      // Update `me` query immediately
+      const token = Cookies.get('token');
+      if (token) {
+        try {
+          const decodedUser = jwtDecode<User>(token);
+          queryClient.setQueryData(['me'], decodedUser);
+        } catch {
+          console.warn('Failed to decode JWT');
+        }
+      }
 
       navigate('/dashboard', { replace: true });
     },
@@ -46,7 +61,6 @@ const Login = () => {
       password: (formData.get('password') as string) ?? '',
     };
 
-    // Zod validation
     const result = loginProps.safeParse(data);
     if (!result.success) {
       const validationErrors = result.error.issues.map(
@@ -75,7 +89,6 @@ const Login = () => {
             Login to manage your legal cases
           </Text>
 
-          {/* Server error display */}
           {mutation.status === 'error' && (
             <Text size="2" className="text-red-600 mb-2 text-center">
               {mutation.error?.message ?? 'Login failed'}

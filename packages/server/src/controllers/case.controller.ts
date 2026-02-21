@@ -22,7 +22,7 @@ export const createCases: RequestHandler = async (req, res) => {
             data.content,
             data.status,
             data.startDate,
-            data.finishedDate
+            data.finishedDate ?? undefined
         );
 
         res.status(201).json(cases)

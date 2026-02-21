@@ -1,5 +1,9 @@
 import logo from '@/assets/Logo.jpg';
-import { NavbarPublic, NavbarGuest } from '@/constants/NavbarLists';
+import {
+  NavbarPublic,
+  NavbarGuest,
+  NavbarPrivate,
+} from '@/constants/NavbarLists';
 import { Container, Flex } from '@radix-ui/themes';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -33,14 +37,22 @@ const Navbar = () => {
 
           <nav>
             <Flex gap="4" className="*:text-sm lg:*:text-base">
-              {/* Always visible */}
+              {/* Always visible links */}
               {NavbarPublic.map(({ label, link }) => (
                 <NavLink key={link} to={link} className={getNavClass}>
                   {label}
                 </NavLink>
               ))}
 
-              {/* Logout only if logged in */}
+              {/* Private links for logged-in users */}
+              {isLoggedIn &&
+                NavbarPrivate.map(({ label, link }) => (
+                  <NavLink key={link} to={link} className={getNavClass}>
+                    {label}
+                  </NavLink>
+                ))}
+
+              {/* Logout button for logged-in users */}
               {isLoggedIn && (
                 <button
                   onClick={handleLogout}
@@ -50,7 +62,7 @@ const Navbar = () => {
                 </button>
               )}
 
-              {/* Guest links only if NOT logged in */}
+              {/* Guest links if not logged-in */}
               {!isLoading &&
                 !isLoggedIn &&
                 NavbarGuest.map(({ label, link }) => (
