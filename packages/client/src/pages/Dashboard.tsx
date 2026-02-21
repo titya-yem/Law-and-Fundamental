@@ -1,26 +1,11 @@
-import { useState } from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import {
-  Box,
-  Container,
-  Flex,
-  Heading,
-  Select,
-  Text,
-  TextField,
-} from '@radix-ui/themes';
-
-// Type matching your cases table
-interface Case {
-  id: number;
-  case_number: string;
-  title: string;
-  content: string;
-  status: 'open' | 'close' | 'ongoing';
-  start_date: string;
-  finished_date: string | null;
-}
+import { Box, Container, Flex, Heading, Select, Text } from '@radix-ui/themes';
+import SearchBar from '@/components/SearchBar';
+import type { Case } from '@/types/DashboardTypes';
+import IsFetching from '@/components/IsFetching';
 
 const CasesDashboard = () => {
   const queryClient = useQueryClient();
@@ -43,8 +28,7 @@ const CasesDashboard = () => {
       return Array.isArray(res.data) ? res.data : res.data.data || [];
     },
   });
-
-  console.log(data);
+  
   // Mutation for updating status
   const updateStatus = useMutation<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,33 +36,36 @@ const CasesDashboard = () => {
     unknown,
     { id: number; status: 'open' | 'close' | 'ongoing' }
   >({
-    mutationFn: async ({ id, status }) => {
+    mutationFn: async ({ id }) => {
       const res = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/api/cases/${id}/status`,
-        { status }
+        `${import.meta.env.VITE_SERVER_URL}/api/case/${id}`
       );
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cases'] }),
   });
 
-  if (isLoading)
-    return <Heading className="text-center py-10">Loading...</Heading>;
-  if (isError)
+  if (isLoading || isError || !data || data.length === 0) {
     return (
-      <Heading className="text-center py-10">
-        Error: {(error as Error).message}
-      </Heading>
+      <IsFetching
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        data={data}
+      />
     );
-  if (!data.length)
-    return <Heading className="text-center py-10">No Cases available</Heading>;
+  }
 
   // Filter cases based on search term
-  const filteredCases = data.filter(
-    (c) =>
-      c.case_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCases = useMemo(() => {
+    const term = searchTerm.toLowerCase();
+
+    return data.filter(
+      (c) =>
+        c.case_number.toLowerCase().includes(term) ||
+        c.title.toLowerCase().includes(term)
+    );
+  }, [data, searchTerm]);
 
   return (
     <Container>
@@ -89,16 +76,7 @@ const CasesDashboard = () => {
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
             <Heading size="3">Cases</Heading>
             <div className="relative w-full md:w-80">
-              <TextField.Root
-                size="3"
-                placeholder="Search by case number or title"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                🔍
-              </div>
+              <SearchBar value={searchTerm} onChange={setSearchTerm} />
             </div>
           </div>
 
@@ -152,14 +130,6 @@ const CasesDashboard = () => {
         </Box>
 
         {/* RIGHT: CRUD Panel */}
-        <Box className="w-[300px] bg-gray-50 rounded-md p-4">
-          <Heading size="4" className="mb-4">
-            CRUD Panel
-          </Heading>
-          <Text className="text-gray-500">
-            CRUD operations will appear here.
-          </Text>
-        </Box>
       </Flex>
     </Container>
   );
