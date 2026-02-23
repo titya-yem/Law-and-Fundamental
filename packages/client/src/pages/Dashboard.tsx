@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import {
+  Badge,
   Box,
   Button,
   Container,
@@ -9,19 +10,19 @@ import {
   Heading,
   Text,
 } from '@radix-ui/themes';
+
 import SearchBar from '@/components/SearchBar';
+import Pagination from '@/components/pagination';
 import IsFetching from '@/components/IsFetching';
 import type { Case } from '@/types/DashboardTypes';
+import DashboardUpdate from '@/components/DashboardUpdate';
+
+const CASES_PER_PAGE = 10;
 
 const CasesDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const casesPerPage = 10;
-
-  /* =========================
-     FETCH CASES
-  ========================== */
   const {
     data: cases = [],
     isLoading,
@@ -38,8 +39,13 @@ const CasesDashboard = () => {
     },
   });
 
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
   const filteredCases = useMemo(() => {
-    const term = searchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase().trim();
 
     return cases.filter(
       (c) =>
@@ -48,16 +54,16 @@ const CasesDashboard = () => {
     );
   }, [cases, searchTerm]);
 
-  const totalPages = Math.ceil(filteredCases.length / casesPerPage);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCases.length / CASES_PER_PAGE)
+  );
 
-  // Ensure page is always valid
-  const safeCurrentPage =
-    totalPages === 0 ? 1 : Math.min(currentPage, totalPages);
+  const safeCurrentPage = Math.min(currentPage, totalPages);
 
   const paginatedCases = useMemo(() => {
-    const startIndex = (safeCurrentPage - 1) * casesPerPage;
-
-    return filteredCases.slice(startIndex, startIndex + casesPerPage);
+    const start = (safeCurrentPage - 1) * CASES_PER_PAGE;
+    return filteredCases.slice(start, start + CASES_PER_PAGE);
   }, [filteredCases, safeCurrentPage]);
 
   if (isLoading || isError) {
@@ -66,30 +72,28 @@ const CasesDashboard = () => {
 
   return (
     <Container className="py-2 h-screen bg-cyan-50">
-      <Box className="rounded-xl p-4 shadow-sm h-full flex flex-col bg-gray-50">
-        {/* HEADER */}
+      <Box className="rounded-xl p-4 shadow-sm h-162.5 flex flex-col bg-gray-50">
+        {/*  HEADER  */}
         <div className="flex justify-between items-center mb-4">
           <Heading size="4">Cases</Heading>
-
-          <Box>
-            <SearchBar value={searchTerm} onChange={setSearchTerm} />
-          </Box>
+          <SearchBar value={searchTerm} onChange={handleSearchChange} />
         </div>
 
-        {/* TABLE */}
+        {/*  TABLE  */}
         <Box className="flex-1 overflow-auto">
-          <div className="h-150">
-            {/* HEADER ROW */}
-            <div className="grid grid-cols-6 gap-2 p-3 border-b border-gray-300 text-center font-medium">
+          <div>
+            {/* Header Row */}
+            <div className="grid grid-cols-7 gap-2 p-3 border-b border-gray-300 text-center font-medium">
               <Text>Case #</Text>
               <Text>Title</Text>
               <Text>Content</Text>
               <Text>Status</Text>
               <Text>Start Date</Text>
               <Text>Finished Date</Text>
+              <Text>Update</Text>
             </div>
 
-            {/* DATA ROWS */}
+            {/* Data Rows */}
             {paginatedCases.map((item) => {
               const startDate = new Date(item.start_date).toLocaleDateString();
 
@@ -100,12 +104,13 @@ const CasesDashboard = () => {
               return (
                 <div
                   key={item.id}
-                  className="grid grid-cols-6 gap-2 p-3 border-b border-gray-200 text-center text-sm"
+                  className="grid grid-cols-7 gap-2 p-3 border-b border-gray-200 text-center text-sm"
                 >
                   <Text>{item.case_number}</Text>
 
                   <Text className="truncate">{item.title}</Text>
 
+                  {/* Content Dialog */}
                   <Dialog.Root>
                     <Dialog.Trigger>
                       <Button size="1" variant="soft">
@@ -119,39 +124,38 @@ const CasesDashboard = () => {
                     </Dialog.Content>
                   </Dialog.Root>
 
-                  <Text>{item.status}</Text>
+                  {/* Status Badge */}
+                  <Badge
+                    size="2"
+                    className="mx-auto"
+                    color={
+                      item.status === 'open'
+                        ? 'cyan'
+                        : item.status === 'close'
+                          ? 'crimson'
+                          : 'orange'
+                    }
+                  >
+                    {item.status}
+                  </Badge>
+
                   <Text>{startDate}</Text>
                   <Text>{finishedDate}</Text>
+
+                  {/*  UPDATE  */}
+                  <DashboardUpdate />
                 </div>
               );
             })}
           </div>
         </Box>
 
-        {/* PAGINATION */}
-        {totalPages > 1 && (
-          <Box className="flex justify-end items-center gap-3 pt-4">
-            <Button
-              variant="soft"
-              disabled={safeCurrentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-            >
-              Previous
-            </Button>
-
-            <Text size="2">
-              Page {safeCurrentPage} of {totalPages}
-            </Text>
-
-            <Button
-              variant="soft"
-              disabled={safeCurrentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-            >
-              Next
-            </Button>
-          </Box>
-        )}
+        {/*  PAGINATION  */}
+        <Pagination
+          currentPage={safeCurrentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </Box>
     </Container>
   );
