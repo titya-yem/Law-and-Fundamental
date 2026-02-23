@@ -51,7 +51,7 @@ export const login: RequestHandler = async (req, res) => {
         const token = jwt.sign(
             { id: user.id, role: user.role},
             JWT_SERECT,
-            { expiresIn: "4h"}
+            { expiresIn: "2h"}
         )
 
         // store token in httpOnly cookie
@@ -60,7 +60,7 @@ export const login: RequestHandler = async (req, res) => {
             // secure must change to true in production
             secure: false,               // true in production (HTTPS)
             sameSite: "lax",             // protects againts CSRF
-            maxAge: 15 * 60 * 1000,      // 15 minutes
+            maxAge: 60 * 60 * 1000,      // 60 minutes
         })
 
         res.json({ message: "Login successful" });

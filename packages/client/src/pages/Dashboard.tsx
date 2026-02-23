@@ -1,22 +1,31 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Box, Container, Flex, Heading, Select, Text } from '@radix-ui/themes';
+import {
+  Box,
+  Button,
+  Container,
+  Dialog,
+  Heading,
+  Text,
+} from '@radix-ui/themes';
 import SearchBar from '@/components/SearchBar';
-import type { Case } from '@/types/DashboardTypes';
 import IsFetching from '@/components/IsFetching';
+import type { Case } from '@/types/DashboardTypes';
 
 const CasesDashboard = () => {
-  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch cases
+  const casesPerPage = 10;
+
+  /* =========================
+     FETCH CASES
+  ========================== */
   const {
-    data = [],
+    data: cases = [],
     isLoading,
     isError,
-    error,
   } = useQuery<Case[]>({
     queryKey: ['cases'],
     queryFn: async () => {
@@ -25,64 +34,53 @@ const CasesDashboard = () => {
         { withCredentials: true }
       );
 
-      return Array.isArray(res.data) ? res.data : res.data.data || [];
+      return Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
     },
   });
-  
-  // Mutation for updating status
-  const updateStatus = useMutation<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any,
-    unknown,
-    { id: number; status: 'open' | 'close' | 'ongoing' }
-  >({
-    mutationFn: async ({ id }) => {
-      const res = await axios.patch(
-        `${import.meta.env.VITE_SERVER_URL}/api/case/${id}`
-      );
-      return res.data;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cases'] }),
-  });
 
-  if (isLoading || isError || !data || data.length === 0) {
-    return (
-      <IsFetching
-        isLoading={isLoading}
-        isError={isError}
-        error={error}
-        data={data}
-      />
-    );
-  }
-
-  // Filter cases based on search term
   const filteredCases = useMemo(() => {
     const term = searchTerm.toLowerCase();
 
-    return data.filter(
+    return cases.filter(
       (c) =>
         c.case_number.toLowerCase().includes(term) ||
         c.title.toLowerCase().includes(term)
     );
-  }, [data, searchTerm]);
+  }, [cases, searchTerm]);
+
+  const totalPages = Math.ceil(filteredCases.length / casesPerPage);
+
+  // Ensure page is always valid
+  const safeCurrentPage =
+    totalPages === 0 ? 1 : Math.min(currentPage, totalPages);
+
+  const paginatedCases = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * casesPerPage;
+
+    return filteredCases.slice(startIndex, startIndex + casesPerPage);
+  }, [filteredCases, safeCurrentPage]);
+
+  if (isLoading || isError) {
+    return <IsFetching isLoading={isLoading} isError={isError} data={cases} />;
+  }
 
   return (
-    <Container>
-      <Flex className="w-full h-screen gap-4 p-4">
-        {/* LEFT: Cases List */}
-        <Box className="w-2/3 bg-white rounded-md p-4 overflow-auto">
-          {/* Search bar */}
-          <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-            <Heading size="3">Cases</Heading>
-            <div className="relative w-full md:w-80">
-              <SearchBar value={searchTerm} onChange={setSearchTerm} />
-            </div>
-          </div>
+    <Container className="py-2 h-screen bg-cyan-50">
+      <Box className="rounded-xl p-4 shadow-sm h-full flex flex-col bg-gray-50">
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-4">
+          <Heading size="4">Cases</Heading>
 
-          {/* Cases table */}
-          <Box className="overflow-x-auto">
-            <div className="grid grid-cols-6 gap-2 p-2 border-b border-gray-300 text-center font-medium">
+          <Box>
+            <SearchBar value={searchTerm} onChange={setSearchTerm} />
+          </Box>
+        </div>
+
+        {/* TABLE */}
+        <Box className="flex-1 overflow-auto">
+          <div className="h-150">
+            {/* HEADER ROW */}
+            <div className="grid grid-cols-6 gap-2 p-3 border-b border-gray-300 text-center font-medium">
               <Text>Case #</Text>
               <Text>Title</Text>
               <Text>Content</Text>
@@ -91,8 +89,10 @@ const CasesDashboard = () => {
               <Text>Finished Date</Text>
             </div>
 
-            {filteredCases.map((item: Case) => {
+            {/* DATA ROWS */}
+            {paginatedCases.map((item) => {
               const startDate = new Date(item.start_date).toLocaleDateString();
+
               const finishedDate = item.finished_date
                 ? new Date(item.finished_date).toLocaleDateString()
                 : '-';
@@ -100,37 +100,59 @@ const CasesDashboard = () => {
               return (
                 <div
                   key={item.id}
-                  className="grid grid-cols-6 gap-2 p-2 border-b border-gray-200 text-center text-sm"
+                  className="grid grid-cols-6 gap-2 p-3 border-b border-gray-200 text-center text-sm"
                 >
                   <Text>{item.case_number}</Text>
-                  <Text>{item.title}</Text>
-                  <Text>{item.content}</Text>
-                  <Select.Root
-                    defaultValue={item.status}
-                    onValueChange={(value) =>
-                      updateStatus.mutate({
-                        id: item.id,
-                        status: value as 'open' | 'close' | 'ongoing',
-                      })
-                    }
-                  >
-                    <Select.Trigger color="orange" variant="soft" />
-                    <Select.Content color="orange" position="popper">
-                      <Select.Item value="open">Open</Select.Item>
-                      <Select.Item value="ongoing">Ongoing</Select.Item>
-                      <Select.Item value="close">Close</Select.Item>
-                    </Select.Content>
-                  </Select.Root>
+
+                  <Text className="truncate">{item.title}</Text>
+
+                  <Dialog.Root>
+                    <Dialog.Trigger>
+                      <Button size="1" variant="soft">
+                        View
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content size="2" maxWidth="400px">
+                      <Text as="p" size="3">
+                        {item.content}
+                      </Text>
+                    </Dialog.Content>
+                  </Dialog.Root>
+
+                  <Text>{item.status}</Text>
                   <Text>{startDate}</Text>
                   <Text>{finishedDate}</Text>
                 </div>
               );
             })}
-          </Box>
+          </div>
         </Box>
 
-        {/* RIGHT: CRUD Panel */}
-      </Flex>
+        {/* PAGINATION */}
+        {totalPages > 1 && (
+          <Box className="flex justify-end items-center gap-3 pt-4">
+            <Button
+              variant="soft"
+              disabled={safeCurrentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
+              Previous
+            </Button>
+
+            <Text size="2">
+              Page {safeCurrentPage} of {totalPages}
+            </Text>
+
+            <Button
+              variant="soft"
+              disabled={safeCurrentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
+              Next
+            </Button>
+          </Box>
+        )}
+      </Box>
     </Container>
   );
 };

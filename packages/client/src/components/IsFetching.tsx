@@ -4,11 +4,10 @@ import { Heading } from '@radix-ui/themes';
 interface IsFetchingProps {
   isLoading: boolean;
   isError: boolean;
-  error: unknown;
   data: Case[] | undefined;
 }
 
-const IsFetching = ({ isLoading, isError, error, data }: IsFetchingProps) => {
+const IsFetching = ({ isLoading, isError, data }: IsFetchingProps) => {
   if (isLoading) {
     return <Heading className="text-center py-10">Loading...</Heading>;
   }
@@ -16,7 +15,7 @@ const IsFetching = ({ isLoading, isError, error, data }: IsFetchingProps) => {
   if (isError) {
     return (
       <Heading className="text-center py-10">
-        Error: {(error as Error)?.message}
+        Please Login or Register to view cases
       </Heading>
     );
   }

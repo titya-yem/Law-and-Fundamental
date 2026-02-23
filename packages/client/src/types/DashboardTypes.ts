@@ -9,7 +9,7 @@ export interface Case {
   finished_date: string | null;
 }
 
-export interface searchBarProps {
+export interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
 }
