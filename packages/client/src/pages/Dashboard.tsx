@@ -12,7 +12,7 @@ import {
 } from '@radix-ui/themes';
 
 import SearchBar from '@/components/SearchBar';
-import Pagination from '@/components/pagination';
+import Pagination from '@/components/Pagination';
 import IsFetching from '@/components/IsFetching';
 import type { Case } from '@/types/DashboardTypes';
 import DashboardUpdate from '@/components/DashboardUpdate';
@@ -118,7 +118,7 @@ const CasesDashboard = () => {
                       </Button>
                     </Dialog.Trigger>
                     <Dialog.Content size="2" maxWidth="400px">
-                      <Text as="p" size="3">
+                      <Text as="p" size="2">
                         {item.content}
                       </Text>
                     </Dialog.Content>
@@ -143,7 +143,17 @@ const CasesDashboard = () => {
                   <Text>{finishedDate}</Text>
 
                   {/*  UPDATE  */}
-                  <DashboardUpdate />
+                  <DashboardUpdate
+                    caseItem={{
+                      id: item.id,
+                      caseNumber: item.case_number,
+                      title: item.title,
+                      content: item.content,
+                      status: item.status,
+                      startDate: item.start_date,
+                      finishedDate: item.finished_date,
+                    }}
+                  />
                 </div>
               );
             })}
