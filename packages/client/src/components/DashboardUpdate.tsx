@@ -7,10 +7,13 @@ import {
   TextField,
   Select,
 } from '@radix-ui/themes';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+
+import RichTextEditor from '@/components/RichTextEditor';
 
 import {
   caseFormSchema,
@@ -18,11 +21,25 @@ import {
   type CaseProps,
 } from '@/types/CaseForm';
 
-const formatDate = (date: string) => new Date(date).toISOString().split('T')[0]; // YYYY-MM-DD
+/* -------------------------------------------------- */
+/* Helpers                                            */
+/* -------------------------------------------------- */
+
+const formatDateOnly = (date?: string | null): string =>
+  date ? new Date(date).toISOString().slice(0, 10) : '';
+
+const toISODate = (date?: string | null) =>
+  date ? new Date(`${date}T00:00:00`).toISOString() : null;
+
+/* -------------------------------------------------- */
+/* Component                                          */
+/* -------------------------------------------------- */
 
 const DashboardUpdate = ({ caseItem }: CaseProps) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+
+  /* ---------- React Hook Form ---------- */
 
   const {
     register,
@@ -36,36 +53,30 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
       title: caseItem.title,
       content: caseItem.content,
       status: caseItem.status,
-      startDate: formatDate(caseItem.startDate),
-      finishedDate: caseItem.finishedDate
-        ? formatDate(caseItem.finishedDate)
-        : null,
+      startDate: formatDateOnly(caseItem.startDate),
+      finishedDate: formatDateOnly(caseItem.finishedDate),
     },
   });
 
-  const status = useWatch({
-    control,
-    name: 'status',
-  });
+  /* ---------- Mutation ---------- */
 
-  const mutation = useMutation({
+  const updateCase = useMutation({
     mutationFn: async (data: CaseFormValues) => {
       const payload = {
         ...data,
-        startDate: new Date(data.startDate).toISOString(),
-        finishedDate: data.finishedDate
-          ? new Date(data.finishedDate).toISOString()
-          : null,
+        startDate: toISODate(data.startDate),
+        finishedDate: toISODate(data.finishedDate),
       };
 
-      const res = await axios.patch(
+      const { data: response } = await axios.patch(
         `${import.meta.env.VITE_SERVER_URL}/api/case/update/${caseItem.id}`,
         payload,
         { withCredentials: true }
       );
 
-      return res.data;
+      return response;
     },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cases'] });
       setOpen(false);
@@ -73,8 +84,12 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
   });
 
   const onSubmit = (data: CaseFormValues) => {
-    mutation.mutate(data);
+    updateCase.mutate(data);
   };
+
+  /* -------------------------------------------------- */
+  /* UI                                                 */
+  /* -------------------------------------------------- */
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -82,14 +97,18 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
         <Button size="1">Edit</Button>
       </Dialog.Trigger>
 
-      <Dialog.Content maxWidth="700px">
+      <Dialog.Content maxWidth="900px">
         <Dialog.Title>Edit Case</Dialog.Title>
 
+        <Dialog.Description>
+          Update case information and content.
+        </Dialog.Description>
+
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 mt-4">
             {/* Case Number */}
             <div>
-              <Text>Case Number</Text>
+              <Text weight="medium">Case Number</Text>
               <TextField.Root {...register('caseNumber')} />
               {errors.caseNumber && (
                 <Text color="red">{errors.caseNumber.message}</Text>
@@ -98,18 +117,26 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
 
             {/* Title */}
             <div>
-              <Text>Title</Text>
+              <Text weight="medium">Title</Text>
               <TextField.Root {...register('title')} />
               {errors.title && <Text color="red">{errors.title.message}</Text>}
             </div>
 
-            {/* Content - 2 cols & 2 rows */}
+            {/* Rich Text Editor */}
             <div className="col-span-2">
-              <Text>Content</Text>
-              <textarea
-                {...register('content')}
-                className="w-full h-40 border rounded-md p-2 resize-none"
+              <Text weight="medium">Content</Text>
+
+              <Controller
+                name="content"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                  />
+                )}
               />
+
               {errors.content && (
                 <Text color="red">{errors.content.message}</Text>
               )}
@@ -117,10 +144,11 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
 
             {/* Status */}
             <div>
-              <Text>Status</Text>
+              <Text weight="medium">Status</Text>
+
               <Controller
-                control={control}
                 name="status"
+                control={control}
                 render={({ field }) => (
                   <Select.Root
                     value={field.value}
@@ -130,7 +158,7 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
                     <Select.Content>
                       <Select.Item value="open">Open</Select.Item>
                       <Select.Item value="ongoing">Ongoing</Select.Item>
-                      <Select.Item value="close">Close</Select.Item>
+                      <Select.Item value="close">Closed</Select.Item>
                     </Select.Content>
                   </Select.Root>
                 )}
@@ -139,23 +167,22 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
 
             {/* Start Date */}
             <div>
-              <Text>Start Date</Text>
+              <Text weight="medium">Start Date</Text>
               <TextField.Root type="date" {...register('startDate')} />
             </div>
 
             {/* Finished Date */}
-            {status === 'close' && (
-              <div>
-                <Text>Finished Date</Text>
-                <TextField.Root type="date" {...register('finishedDate')} />
-                {errors.finishedDate && (
-                  <Text color="red">{errors.finishedDate.message}</Text>
-                )}
-              </div>
-            )}
+            <div>
+              <Text weight="medium">Finished Date</Text>
+              <TextField.Root type="date" {...register('finishedDate')} />
+              {errors.finishedDate && (
+                <Text color="red">{errors.finishedDate.message}</Text>
+              )}
+            </div>
           </div>
 
-          <Flex gap="3" mt="5" justify="end">
+          {/* Actions */}
+          <Flex gap="3" mt="6" justify="end">
             <Button
               type="button"
               variant="soft"
@@ -165,8 +192,8 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
               Cancel
             </Button>
 
-            <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Saving...' : 'Save'}
+            <Button type="submit" disabled={updateCase.isPending}>
+              {updateCase.isPending ? 'Saving...' : 'Save'}
             </Button>
           </Flex>
         </form>
