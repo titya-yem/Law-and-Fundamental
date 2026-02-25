@@ -6,6 +6,7 @@ import {
   Text,
   TextField,
   Select,
+  Grid,
 } from '@radix-ui/themes';
 
 import { useForm, Controller } from 'react-hook-form';
@@ -99,33 +100,22 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
 
       <Dialog.Content maxWidth="900px">
         <Dialog.Title>Edit Case</Dialog.Title>
-
         <Dialog.Description>
           Update case information and content.
         </Dialog.Description>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-2 gap-4 mt-4">
-            {/* Case Number */}
-            <div>
-              <Text weight="medium">Case Number</Text>
-              <TextField.Root {...register('caseNumber')} />
-              {errors.caseNumber && (
-                <Text color="red">{errors.caseNumber.message}</Text>
-              )}
-            </div>
-
-            {/* Title */}
-            <div>
+            {/* ---------- Title (Full Width) ---------- */}
+            <div className="col-span-2">
               <Text weight="medium">Title</Text>
               <TextField.Root {...register('title')} />
               {errors.title && <Text color="red">{errors.title.message}</Text>}
             </div>
 
-            {/* Rich Text Editor */}
+            {/* ---------- Content (Full Width) ---------- */}
             <div className="col-span-2">
               <Text weight="medium">Content</Text>
-
               <Controller
                 name="content"
                 control={control}
@@ -136,16 +126,23 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
                   />
                 )}
               />
-
               {errors.content && (
                 <Text color="red">{errors.content.message}</Text>
               )}
             </div>
 
-            {/* Status */}
+            {/* ---------- Case Number ---------- */}
             <div>
-              <Text weight="medium">Status</Text>
+              <Text weight="medium">Case Number</Text>
+              <TextField.Root {...register('caseNumber')} />
+              {errors.caseNumber && (
+                <Text color="red">{errors.caseNumber.message}</Text>
+              )}
+            </div>
 
+            {/* ---------- Status ---------- */}
+            <Grid>
+              <Text weight="medium">Status</Text>
               <Controller
                 name="status"
                 control={control}
@@ -163,15 +160,15 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
                   </Select.Root>
                 )}
               />
-            </div>
+            </Grid>
 
-            {/* Start Date */}
+            {/* ---------- Start Date ---------- */}
             <div>
               <Text weight="medium">Start Date</Text>
               <TextField.Root type="date" {...register('startDate')} />
             </div>
 
-            {/* Finished Date */}
+            {/* ---------- Finished Date ---------- */}
             <div>
               <Text weight="medium">Finished Date</Text>
               <TextField.Root type="date" {...register('finishedDate')} />
@@ -181,7 +178,7 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
             </div>
           </div>
 
-          {/* Actions */}
+          {/* ---------- Actions ---------- */}
           <Flex gap="3" mt="6" justify="end">
             <Button
               type="button"

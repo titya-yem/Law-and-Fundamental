@@ -127,3 +127,34 @@
 button.rt-Button:not(:disabled) {
   cursor: pointer;
 }
+
+/* Ensure lists display correctly inside the editor */
+.ProseMirror ul {
+  list-style-type: disc;
+  margin-left: 1.5em;
+  padding-left: 0;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  margin-left: 1.5em;
+  padding-left: 0;
+}
+
+.ProseMirror li {
+  margin: 0.25em 0;
+}
+
+/* Headings */
+.ProseMirror h1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.ProseMirror h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+}

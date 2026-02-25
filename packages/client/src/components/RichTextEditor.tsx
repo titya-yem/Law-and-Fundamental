@@ -9,13 +9,11 @@ import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import Typography from '@tiptap/extension-typography';
-
 import type { ReactNode } from 'react';
 
 /* =====================================================
-   ✅ Toolbar Button (OUTSIDE COMPONENT)
+   ✅ Toolbar Button
 ===================================================== */
-
 type BtnProps = {
   onClick: () => void;
   active?: boolean;
@@ -38,7 +36,6 @@ function ToolbarButton({ onClick, active, children }: BtnProps) {
 /* =====================================================
    Editor Component
 ===================================================== */
-
 interface Props {
   value: string;
   onChange: (value: string) => void;
@@ -47,7 +44,12 @@ interface Props {
 export default function RichTextEditor({ value, onChange }: Props) {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        bulletList: {}, // TS-safe
+        orderedList: {},
+        listItem: {},
+        heading: { levels: [1, 2, 3] },
+      }),
       Underline,
       Typography,
       TextStyle,
@@ -63,17 +65,8 @@ export default function RichTextEditor({ value, onChange }: Props) {
       }),
     ],
     content: value,
-    immediatelyRender: false,
-
     onUpdate({ editor }) {
       onChange(editor.getHTML());
-    },
-
-    editorProps: {
-      attributes: {
-        class:
-          'min-h-[220px] border rounded-md p-3 focus:outline-none bg-white',
-      },
     },
   });
 
@@ -83,20 +76,19 @@ export default function RichTextEditor({ value, onChange }: Props) {
     <div className="space-y-2">
       {/* ================= TOOLBAR ================= */}
       <div className="flex flex-wrap gap-2 border rounded-md p-2 bg-gray-50">
+        {/* Text Formatting */}
         <ToolbarButton
           active={editor.isActive('bold')}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <b>B</b>
         </ToolbarButton>
-
         <ToolbarButton
           active={editor.isActive('italic')}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <i>I</i>
         </ToolbarButton>
-
         <ToolbarButton
           active={editor.isActive('underline')}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
@@ -104,37 +96,23 @@ export default function RichTextEditor({ value, onChange }: Props) {
           <u>U</u>
         </ToolbarButton>
 
+        {/* Lists */}
         <ToolbarButton
+          active={editor.isActive('bulletList')}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           • List
         </ToolbarButton>
-
         <ToolbarButton
+          active={editor.isActive('orderedList')}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           1. List
         </ToolbarButton>
 
+        {/* Headings */}
         <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign('left').run()}
-        >
-          ⬅
-        </ToolbarButton>
-
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-        >
-          ⬌
-        </ToolbarButton>
-
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign('right').run()}
-        >
-          ➡
-        </ToolbarButton>
-
-        <ToolbarButton
+          active={editor.isActive('heading', { level: 2 })}
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
@@ -142,14 +120,35 @@ export default function RichTextEditor({ value, onChange }: Props) {
           H2
         </ToolbarButton>
 
+        {/* Alignment */}
+        <ToolbarButton
+          active={editor.isActive({ textAlign: 'left' })}
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+        >
+          ⬅
+        </ToolbarButton>
+        <ToolbarButton
+          active={editor.isActive({ textAlign: 'center' })}
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+        >
+          ⬌
+        </ToolbarButton>
+        <ToolbarButton
+          active={editor.isActive({ textAlign: 'right' })}
+          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+        >
+          ➡
+        </ToolbarButton>
+
+        {/* Undo/Redo */}
         <ToolbarButton onClick={() => editor.chain().focus().undo().run()}>
           Undo
         </ToolbarButton>
-
         <ToolbarButton onClick={() => editor.chain().focus().redo().run()}>
           Redo
         </ToolbarButton>
 
+        {/* Link */}
         <ToolbarButton
           onClick={() => {
             const url = prompt('Enter link URL');
@@ -165,6 +164,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
           Link
         </ToolbarButton>
 
+        {/* Image */}
         <ToolbarButton
           onClick={() => {
             const url = prompt('Image URL');
@@ -176,7 +176,9 @@ export default function RichTextEditor({ value, onChange }: Props) {
       </div>
 
       {/* ================= EDITOR ================= */}
-      <EditorContent editor={editor} />
+      <div className="ProseMirror min-h-[220px] border rounded-md p-3 bg-white">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 }
