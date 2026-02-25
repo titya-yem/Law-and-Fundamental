@@ -11,9 +11,6 @@ import Highlight from '@tiptap/extension-highlight';
 import Typography from '@tiptap/extension-typography';
 import type { ReactNode } from 'react';
 
-/* =====================================================
-   ✅ Toolbar Button
-===================================================== */
 type BtnProps = {
   onClick: () => void;
   active?: boolean;
@@ -33,9 +30,6 @@ function ToolbarButton({ onClick, active, children }: BtnProps) {
   );
 }
 
-/* =====================================================
-   Editor Component
-===================================================== */
 interface Props {
   value: string;
   onChange: (value: string) => void;

@@ -14,7 +14,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-import RichTextEditor from '@/components/RichTextEditor';
+import RichTextEditor from '@/components/Dashboard/RichTextEditor';
+import DeleteCaseButton from '@/components/Dashboard/DeleteCaseButton';
 
 import {
   caseFormSchema,
@@ -22,25 +23,15 @@ import {
   type CaseProps,
 } from '@/types/CaseForm';
 
-/* -------------------------------------------------- */
-/* Helpers                                            */
-/* -------------------------------------------------- */
-
 const formatDateOnly = (date?: string | null): string =>
   date ? new Date(date).toISOString().slice(0, 10) : '';
 
 const toISODate = (date?: string | null) =>
   date ? new Date(`${date}T00:00:00`).toISOString() : null;
 
-/* -------------------------------------------------- */
-/* Component                                          */
-/* -------------------------------------------------- */
-
 const DashboardUpdate = ({ caseItem }: CaseProps) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-
-  /* ---------- React Hook Form ---------- */
 
   const {
     register,
@@ -58,8 +49,6 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
       finishedDate: formatDateOnly(caseItem.finishedDate),
     },
   });
-
-  /* ---------- Mutation ---------- */
 
   const updateCase = useMutation({
     mutationFn: async (data: CaseFormValues) => {
@@ -88,10 +77,6 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
     updateCase.mutate(data);
   };
 
-  /* -------------------------------------------------- */
-  /* UI                                                 */
-  /* -------------------------------------------------- */
-
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger>
@@ -99,9 +84,9 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="900px">
-        <Dialog.Title>Edit Case</Dialog.Title>
+        <Dialog.Title>Update Case</Dialog.Title>
         <Dialog.Description>
-          Update case information and content.
+          Update case's information and content.
         </Dialog.Description>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -180,6 +165,7 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
 
           {/* ---------- Actions ---------- */}
           <Flex gap="3" mt="6" justify="end">
+            <DeleteCaseButton caseId={caseItem.id} />
             <Button
               type="button"
               variant="soft"
@@ -188,7 +174,6 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
             >
               Cancel
             </Button>
-
             <Button type="submit" disabled={updateCase.isPending}>
               {updateCase.isPending ? 'Saving...' : 'Save'}
             </Button>
