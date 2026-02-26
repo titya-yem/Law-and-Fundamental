@@ -58,7 +58,7 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
         finishedDate: toISODate(data.finishedDate),
       };
 
-      const { data: response } = await axios.patch(
+      const { data: response } = await axios.put(
         `${import.meta.env.VITE_SERVER_URL}/api/case/update/${caseItem.id}`,
         payload,
         { withCredentials: true }
