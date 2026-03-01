@@ -54,3 +54,16 @@ export const updateCase = async (
 
     return result.rows[0];
 };
+
+export const deleteCase = async (id: number) => {
+    const result = await pool.query(
+        `DELETE FROM cases WHERE id = $1
+         RETURNING *`,
+         [id]
+    );
+
+    if (result.rowCount === 0)
+        throw new Error("Case not found");
+
+    return result.rows[0]
+};

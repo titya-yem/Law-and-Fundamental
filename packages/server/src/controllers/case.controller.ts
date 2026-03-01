@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import { caseSchema } from "../validations/case.validation";
-import { createCase, getCasesFromDB, updateCase } from "../models/case.model";
+import { createCase, deleteCase, getCasesFromDB, updateCase } from "../models/case.model";
 
 export const getCases: RequestHandler = async (req, res) => {
     try {
@@ -52,5 +52,23 @@ export const updateCases: RequestHandler = async (req, res) => {
         res.status(200).json(updatedCase);
     } catch (error: any) {
         res.status(400).json({ message: error.message });
+    }
+};
+
+export const deleteCases: RequestHandler = async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+
+        if (Number.isNaN(id)) {
+            return res.status(400).json({ message: "Invalid case id" });
+        }
+
+        const deletedCase = await deleteCase(id);
+
+        return res.status(200).json(deletedCase);
+    } catch (error: any) {
+        return res.status(500).json({
+            message: error.message || "Server error"
+        });
     }
 };
