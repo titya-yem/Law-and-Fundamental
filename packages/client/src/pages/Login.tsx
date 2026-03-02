@@ -21,7 +21,7 @@ import type { User } from '@/hooks/useAuth';
 const Login = () => {
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
-  const queryClient = useQueryClient(); // React Query client
+  const queryClient = useQueryClient();
 
   const mutation = useMutation<AxiosResponse, AxiosError, LoginProps>({
     mutationFn: (data: LoginProps) =>
@@ -74,7 +74,7 @@ const Login = () => {
   };
 
   return (
-    <Section size="3" className="px-4 bg-slate-100 flex items-center h-125">
+    <Section size="3" className="px-4 flex items-center h-152.25 bg-slate-100">
       <Container size="4">
         <Flex
           direction="column"

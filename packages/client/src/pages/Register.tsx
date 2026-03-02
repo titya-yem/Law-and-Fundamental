@@ -61,7 +61,7 @@ const Register = () => {
   };
 
   return (
-    <Section size="3" className="px-4 bg-slate-100 flex items-center">
+    <Section size="3" className="px-4 h-152.25 flex items-center bg-slate-100">
       <Container size="4">
         <Flex
           direction="column"

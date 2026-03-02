@@ -21,7 +21,7 @@ const Footer = () => {
     <motion.footer
       initial="hidden"
       animate="visible"
-      className="bg-gray-50 border-t border-gray-200"
+      className="border-t bg-slate-100"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Separator.Root className="bg-gray-200 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full" />
