@@ -1,4 +1,4 @@
-import logo from '@/assets/Logo.jpg';
+import logo from '@/assets/Logo.png';
 import {
   NavbarPublic,
   NavbarGuest,
@@ -20,13 +20,21 @@ const Navbar = () => {
   const isLoggedIn = !isLoading && !!user;
 
   return (
-    <Container className="px-4">
-      <header>
-        <Flex justify="between" align="center" py="2">
-          <img src={logo} alt="Logo" className="w-14 lg:w-16" />
+    <header className="fixed top-10 w-full z-50">
+      <Container className="px-4">
+        <Flex
+          justify="between"
+          align="center"
+          className="px-2 py-1 rounded-2xl bg-white/80"
+        >
+          <img
+            src={logo}
+            alt="Law and Fundamental Local Mediation Office Logo"
+            className="h-10"
+          />
 
           <nav>
-            <Flex gap="4" className="*:text-sm lg:*:text-base">
+            <Flex gap="3" className="md:gap-4 *:text-sm lg:*:text-base pr-1">
               {/* Always visible links */}
               {NavbarPublic.map(({ label, link }) => (
                 <NavLink key={link} to={link} className={getNavClass}>
@@ -63,8 +71,8 @@ const Navbar = () => {
             </Flex>
           </nav>
         </Flex>
-      </header>
-    </Container>
+      </Container>
+    </header>
   );
 };
 

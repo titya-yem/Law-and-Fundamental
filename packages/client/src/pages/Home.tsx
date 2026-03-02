@@ -1,103 +1,36 @@
-import {
-  Button,
-  Container,
-  Flex,
-  Heading,
-  Section,
-  Text,
-} from '@radix-ui/themes';
-import FeatureCard from '@/components/FeatureCard';
-import constructionLaw from '@/assets/construction law.jpg';
-import lawAndJustice from '@/assets/law and justice.jpg';
+import mainImage from '@/assets/main image.png';
+import { Button, Text } from '@radix-ui/themes';
 import { Link } from 'react-router';
 
-export default function CaseManagementLanding() {
+const Home = () => {
   return (
-    <Flex direction="column">
-      {/* Hero Section */}
-      <Section size="3" className="bg-slate-200">
-        <Container size="3">
-          <Flex
-            direction="column"
-            align="center"
-            justify="center"
-            gap="4"
-            className="text-center py-10"
-          >
-            <Text
-              size="1"
-              className="uppercase font-medium tracking-widest text-gray-600"
-            >
-              Manage
-            </Text>
+    <main>
+      <div className="relative">
+        <img
+          src={mainImage}
+          alt="Law and Fundamental Meditation Office landing page"
+        />
 
-            <Heading size="8" weight="medium">
-              Organize your cases
-            </Heading>
+        <div className="absolute inset-0 flex flex-col items-start justify-center w-[80%] *:pb-6">
+          <h5 className="text-lg font-medium text-white">
+            Your most trusted legal firm in Phnom Penh
+          </h5>
 
-            <Text size="3" className="max-w-2xl text-gray-700">
-              A clean, professional system built for legal teams who need to
-              track cases without the noise. Filter by status, search by case
-              number, and access everything in one place. Simple enough for
-              users, powerful enough for admins.
-            </Text>
+          <h1 className="text-3xl font-medium text-white">
+            Providing essential legal services at rates that do you justice.
+          </h1>
 
-            <Flex gap="3" mt="4">
-              <Button size="3">
-                <Link to="/login">Login</Link>
-              </Button>
-              <Button size="3" variant="outline">
-                <Link to="/register">Register</Link>
-              </Button>
-            </Flex>
-
-            {/* left side */}
-            <img src="" alt="" />
-          </Flex>
-        </Container>
-      </Section>
-
-      {/* Advantages Section */}
-      <Section size="3">
-        <Container size="4">
-          <Flex
-            direction="column"
-            align="center"
-            gap="3"
-            className="text-center"
-          >
-            <Text size="1" className="uppercase tracking-widest text-gray-500">
-              Advantages
-            </Text>
-
-            <Heading size="7" weight="medium">
-              Built for legal teams
-            </Heading>
-
-            <Text size="3" className="text-gray-600">
-              Work faster, collaborate better, stay organized
-            </Text>
-          </Flex>
-
-          <Flex gap="5" mt="7" wrap="wrap" justify="center">
-            <FeatureCard
-              title="Efficiency that saves hours each week"
-              description="Eliminate manual tracking and redundant work"
-              imageUrl={constructionLaw}
-              link="dashboard"
-              goTo="Dashboard"
-            />
-
-            <FeatureCard
-              title="Documents stay protected and accessible"
-              description="Role-based access keeps sensitive files secure"
-              imageUrl={lawAndJustice}
-              link="cases"
-              goTo="Cases"
-            />
-          </Flex>
-        </Container>
-      </Section>
-    </Flex>
+          <div className="pl-4">
+            <Button asChild color="tomato">
+              <Text as="span">
+                <Link to="/dashboard">Dashboard</Link>
+              </Text>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </main>
   );
-}
+};
+
+export default Home;
