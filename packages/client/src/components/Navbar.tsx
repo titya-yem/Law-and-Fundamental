@@ -7,27 +7,17 @@ import {
 import { Container, Flex } from '@radix-ui/themes';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { api } from '@/lib/api';
-import { useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import { useLogout } from '@/hooks/useLogout';
 
 const getNavClass = ({ isActive }: { isActive: boolean }) =>
-  isActive ? 'font-semibold' : 'text-gray-700 hover:underline delay-200';
+  isActive
+    ? 'font-semibold underline'
+    : 'text-gray-700 hover:underline delay-200';
 
 const Navbar = () => {
   const { data: user, isLoading } = useAuth();
-  const queryClient = useQueryClient();
-  const isLoggedIn = !isLoading && !!user;
 
-  const handleLogout = async () => {
-    try {
-      await api.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/logout`);
-      queryClient.removeQueries({ queryKey: ['me'] });
-      toast.success('Logged out successfully');
-    } catch {
-      toast.error('Logout failed');
-    }
-  };
+  const isLoggedIn = !isLoading && !!user;
 
   return (
     <Container className="px-4">
@@ -55,7 +45,7 @@ const Navbar = () => {
               {/* Logout button for logged-in users */}
               {isLoggedIn && (
                 <button
-                  onClick={handleLogout}
+                  onClick={useLogout}
                   className="text-gray-700 hover:underline"
                 >
                   Logout
