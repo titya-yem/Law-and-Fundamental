@@ -11,7 +11,6 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import MainLayout from './layouts/MainLayout';
-import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 
 const queryClient = new QueryClient();
@@ -26,10 +25,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
 
-              <Route element={<AuthLayout />}>
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-              </Route>
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
             </Route>
 
             <Route path="/dashboard" element={<DashboardLayout />}>
