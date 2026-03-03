@@ -1,19 +1,15 @@
-import About from '@/components/Home/About';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import { Outlet } from 'react-router';
-import Section from '@/components/Home/Section';
 
-const MainLayout = () => {
+const AuthLayout = () => {
   return (
     <main>
       <Navbar />
       <Outlet />
-      <About />
-      <Section />
       <Footer />
     </main>
   );
 };
 
-export default MainLayout;
+export default AuthLayout;

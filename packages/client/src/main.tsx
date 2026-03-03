@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import MainLayout from './layouts/MainLayout';
 import DashboardLayout from './layouts/DashboardLayout';
+import AuthLayout from './layouts/AuthLayout';
 
 const queryClient = new QueryClient();
 
@@ -24,7 +25,9 @@ createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
+            </Route>
 
+            <Route path="" element={<AuthLayout />}>
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
             </Route>
