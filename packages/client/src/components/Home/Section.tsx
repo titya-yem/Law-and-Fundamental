@@ -3,11 +3,11 @@ import lawAndJustice from '@/assets/law and justice.jpg';
 
 const Section = () => {
   return (
-    <section className="bg-slate-100">
+    <section className="py-12 lg:py-16 bg-slate-100">
       <Container className="px-4">
-        <div className="h-[500px] flex flex-col md:flex-row justify-between items-center ">
+        <div className="flex flex-col md:flex-row justify-between items-center ">
           <Box>
-            <h2 className="text-3xl text-center md:text-left font-medium pt-12 pb-12">
+            <h2 className="text-3xl text-center md:text-left font-medium pb-12">
               Main Practice Areas
             </h2>
             <p className="w-[95%]">
@@ -27,7 +27,7 @@ const Section = () => {
           <img
             src={lawAndJustice}
             alt="Law and justice with Cambodian flag"
-            className="w-87.5 md:w-[400px] mx-auto rounded-md"
+            className="w-87.5 md:w-100 mx-auto rounded-md"
           />
         </div>
       </Container>
