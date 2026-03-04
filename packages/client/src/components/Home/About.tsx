@@ -3,11 +3,12 @@ import { Box, Container } from '@radix-ui/themes';
 
 const About = () => {
   return (
-    <section className="bg-gray-900">
+    <section className="pb-16 bg-gray-900">
       <Container className="px-4 *:text-center *:text-white">
-        <h2 className="text-3xl font-medium pt-12 lg:pt-20 pb-4">
+        <h2 className="text-3xl font-medium pt-12 md:pt-20 pb-6">
           About Our Firm
         </h2>
+        
         <div className="flex flex-col md:flex-row justify-between items-center gap-y-8 md:gap-x-6">
           <Box>
             <img
@@ -44,7 +45,7 @@ const About = () => {
               className="w-75 lg:w-80 pb-4 mx-auto rounded-md"
             />
             <h5 className="text-2xl md:text-xl font-medium">Value</h5>
-            <p className="text-base md:text-sm pb-4">
+            <p className="text-base md:text-sm">
               This page should focus on the law firm or the lawyer's background.
               As with the usual About Us pages, you can talk about the history,
               track record, or even the guiding principles of the firm/lawyer.

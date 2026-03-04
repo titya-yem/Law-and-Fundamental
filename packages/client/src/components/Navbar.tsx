@@ -20,7 +20,7 @@ const Navbar = () => {
   const isLoggedIn = !isLoading && !!user;
 
   return (
-    <header className="fixed top-10 w-full z-50">
+    <header className="fixed top-5 w-full z-50">
       <Container className="px-4">
         <Flex
           justify="between"
