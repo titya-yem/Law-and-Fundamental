@@ -3,7 +3,7 @@ import lawAndJustice from '@/assets/law and justice.jpg';
 
 const Section = () => {
   return (
-    <section className="py-12 lg:py-16 bg-slate-100">
+    <section className="py-12 lg:py-28 bg-slate-100">
       <Container className="px-4">
         <div className="flex flex-col md:flex-row justify-between items-center ">
           <Box>

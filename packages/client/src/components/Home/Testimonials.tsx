@@ -4,7 +4,7 @@ import commentSVG from '@/assets/comment.svg';
 const Testimonials = () => {
   return (
     <section className="bg-yellow-500">
-      <Container className="px-2 md:px-4 py-8">
+      <Container className="px-2 md:px-4 py-8 lg:py-24">
         <div className="flex flex-col md:flex-row justify-between md:items-start md:gap-x-28">
           <Box className="flex-none *:font-medium *:py-1 pb-2 md:pb-0 text-center">
             <h2 className="text-3xl text-white">Collaborator Testimonials</h2>
