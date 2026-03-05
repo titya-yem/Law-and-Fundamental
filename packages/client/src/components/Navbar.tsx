@@ -8,14 +8,20 @@ import { Container, Flex } from '@radix-ui/themes';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLogout } from '@/hooks/useLogout';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const getNavClass = ({ isActive }: { isActive: boolean }) =>
-  isActive
-    ? 'font-semibold underline'
-    : 'text-gray-700 hover:underline delay-200';
+  isActive ? 'font-semibold underline' : 'text-gray-700 hover:underline';
+
+const itemVariants = {
+  hidden: { opacity: 0, y: -10 },
+  show: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+};
 
 const Navbar = () => {
   const { data: user, isLoading } = useAuth();
+  const logout = useLogout();
 
   const isLoggedIn = !isLoading && !!user;
 
@@ -25,49 +31,87 @@ const Navbar = () => {
         <Flex
           justify="between"
           align="center"
-          className="px-2 py-1 rounded-2xl bg-white/80"
+          className="px-3 py-2 rounded-2xl bg-white/80 backdrop-blur-md shadow-sm"
         >
-          <img
+          {/* Logo */}
+          <motion.img
             src={logo}
             alt="Law and Fundamental Local Mediation Office Logo"
             className="h-10"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
           />
 
           <nav>
             <Flex gap="3" className="md:gap-4 *:text-sm lg:*:text-base pr-1">
-              {/* Always visible links */}
+              {/* Public links */}
               {NavbarPublic.map(({ label, link }) => (
-                <NavLink key={link} to={link} className={getNavClass}>
-                  {label}
-                </NavLink>
+                <motion.div
+                  key={link}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="show"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <NavLink to={link} className={getNavClass}>
+                    {label}
+                  </NavLink>
+                </motion.div>
               ))}
 
-              {/* Private links for logged-in users */}
-              {isLoggedIn &&
-                NavbarPrivate.map(({ label, link }) => (
-                  <NavLink key={link} to={link} className={getNavClass}>
-                    {label}
-                  </NavLink>
-                ))}
+              <AnimatePresence mode="wait">
+                {/* Logged in */}
+                {isLoggedIn && (
+                  <>
+                    {NavbarPrivate.map(({ label, link }) => (
+                      <motion.div
+                        key={link}
+                        variants={itemVariants}
+                        initial="hidden"
+                        animate="show"
+                        exit="exit"
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <NavLink to={link} className={getNavClass}>
+                          {label}
+                        </NavLink>
+                      </motion.div>
+                    ))}
 
-              {/* Logout button for logged-in users */}
-              {isLoggedIn && (
-                <button
-                  onClick={useLogout}
-                  className="text-gray-700 hover:underline"
-                >
-                  Logout
-                </button>
-              )}
+                    <motion.button
+                      key="logout"
+                      variants={itemVariants}
+                      initial="hidden"
+                      animate="show"
+                      exit="exit"
+                      whileHover={{ scale: 1.05 }}
+                      onClick={logout}
+                      className="text-gray-700 hover:underline"
+                    >
+                      Logout
+                    </motion.button>
+                  </>
+                )}
 
-              {/* Guest links if not logged-in */}
-              {!isLoading &&
-                !isLoggedIn &&
-                NavbarGuest.map(({ label, link }) => (
-                  <NavLink key={link} to={link} className={getNavClass}>
-                    {label}
-                  </NavLink>
-                ))}
+                {/* Guest */}
+                {!isLoggedIn &&
+                  !isLoading &&
+                  NavbarGuest.map(({ label, link }) => (
+                    <motion.div
+                      key={link}
+                      variants={itemVariants}
+                      initial="hidden"
+                      animate="show"
+                      exit="exit"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <NavLink to={link} className={getNavClass}>
+                        {label}
+                      </NavLink>
+                    </motion.div>
+                  ))}
+              </AnimatePresence>
             </Flex>
           </nav>
         </Flex>
