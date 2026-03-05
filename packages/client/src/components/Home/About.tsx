@@ -5,10 +5,10 @@ const About = () => {
   return (
     <section className="pb-16 bg-gray-900">
       <Container className="px-4 *:text-center *:text-white">
-        <h2 className="text-3xl font-medium pt-12 md:pt-20 pb-6">
+        <h2 className="text-3xl md:text-left lg:pl-6 font-medium pt-12 md:pt-20 pb-8">
           About Our Firm
         </h2>
-        
+
         <div className="flex flex-col md:flex-row justify-between items-center gap-y-8 md:gap-x-6">
           <Box>
             <img

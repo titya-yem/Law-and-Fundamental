@@ -7,7 +7,7 @@ const Section = () => {
       <Container className="px-4">
         <div className="flex flex-col md:flex-row justify-between items-center ">
           <Box>
-            <h2 className="text-3xl text-center md:text-left font-medium pb-12">
+            <h2 className="text-3xl text-center md:text-left font-medium pb-12 md:pb-24">
               Main Practice Areas
             </h2>
             <p className="w-[95%]">
@@ -27,7 +27,7 @@ const Section = () => {
           <img
             src={lawAndJustice}
             alt="Law and justice with Cambodian flag"
-            className="w-87.5 md:w-100 mx-auto rounded-md"
+            className="w-87.5 md:h-80 md:w-100 mx-auto rounded-md"
           />
         </div>
       </Container>
