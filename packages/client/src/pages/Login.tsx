@@ -11,11 +11,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios, { type AxiosError, type AxiosResponse } from 'axios';
 import toast from 'react-hot-toast';
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
-
 import { loginProps, type LoginProps } from '@/types/LoginTypes';
-import type { User } from '@/hooks/useAuth';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,19 +26,12 @@ const Login = () => {
 
     onSuccess: () => {
       toast.success('Login successful 🎉');
-
       formRef.current?.reset();
 
-      const token = Cookies.get('token');
-      if (token) {
-        try {
-          const decodedUser = jwtDecode<User>(token);
-          queryClient.setQueryData(['me'], decodedUser);
-        } catch {
-          console.warn('JWT decode failed');
-        }
-      }
+      // Refetch the authenticated user data
+      queryClient.invalidateQueries({ queryKey: ['me'] });
 
+      // Redirect to dashboard
       navigate('/dashboard', { replace: true });
     },
 
