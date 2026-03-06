@@ -7,15 +7,14 @@ import {
   Section,
   Text,
 } from '@radix-ui/themes';
-import { Link } from 'react-router';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import type { AxiosError, AxiosResponse } from 'axios';
-import { loginProps, type LoginProps } from '@/types/LoginTypes';
+import axios, { type AxiosError, type AxiosResponse } from 'axios';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+
+import { loginProps, type LoginProps } from '@/types/LoginTypes';
 import type { User } from '@/hooks/useAuth';
 
 const Login = () => {
@@ -23,30 +22,32 @@ const Login = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<AxiosResponse, AxiosError, LoginProps>({
-    mutationFn: (data: LoginProps) =>
+  const loginMutation = useMutation<AxiosResponse, AxiosError, LoginProps>({
+    mutationFn: (data) =>
       axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, data, {
         withCredentials: true,
       }),
+
     onSuccess: () => {
       toast.success('Login successful 🎉');
+
       formRef.current?.reset();
 
-      // Update `me` query immediately
       const token = Cookies.get('token');
       if (token) {
         try {
           const decodedUser = jwtDecode<User>(token);
           queryClient.setQueryData(['me'], decodedUser);
         } catch {
-          console.warn('Failed to decode JWT');
+          console.warn('JWT decode failed');
         }
       }
 
       navigate('/dashboard', { replace: true });
     },
-    onError: (error: AxiosError) => {
-      alert(error.message ?? 'Login failed');
+
+    onError: (error) => {
+      toast.error(error.message ?? 'Login failed');
     },
   });
 
@@ -56,21 +57,20 @@ const Login = () => {
 
     const formData = new FormData(formRef.current);
 
-    const data: LoginProps = {
-      email: (formData.get('email') as string) ?? '',
-      password: (formData.get('password') as string) ?? '',
+    const payload: LoginProps = {
+      email: String(formData.get('email') ?? ''),
+      password: String(formData.get('password') ?? ''),
     };
 
-    const result = loginProps.safeParse(data);
-    if (!result.success) {
-      const validationErrors = result.error.issues.map(
-        (issue) => issue.message
-      );
-      alert(validationErrors.join('\n'));
+    const validation = loginProps.safeParse(payload);
+
+    if (!validation.success) {
+      const errors = validation.error.issues.map((issue) => issue.message);
+      alert(errors.join('\n'));
       return;
     }
 
-    mutation.mutate(data);
+    loginMutation.mutate(payload);
   };
 
   return (
@@ -81,50 +81,41 @@ const Login = () => {
           align="center"
           className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto"
         >
-          <Heading size="6" weight="medium" className="pb-2 text-center">
+          <Heading size="6" weight="medium" className="text-center pb-2">
             Welcome Back
           </Heading>
 
-          <Text size="2" className="pb-6 text-gray-600 text-center">
+          <Text size="2" className="text-gray-600 text-center pb-6">
             Login to manage your legal cases
           </Text>
 
-          {mutation.status === 'error' && (
-            <Text size="2" className="text-red-600 mb-2 text-center">
-              {mutation.error?.message ?? 'Login failed'}
+          {loginMutation.isError && (
+            <Text size="2" className="text-red-600 text-center mb-2">
+              {loginMutation.error?.message ?? 'Login failed'}
             </Text>
           )}
 
           <form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="w-full flex flex-col gap-4"
+            className="flex flex-col gap-4 w-full"
           >
-            <Flex direction="column" gap="1">
-              <input
-                type="email"
-                name="email"
-                placeholder="Email Address"
-                className="border rounded-md p-2 text-gray-700"
-              />
-            </Flex>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              className="border rounded-md p-2 text-gray-700"
+            />
 
-            <Flex direction="column" gap="1">
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                className="border rounded-md p-2 text-gray-700"
-              />
-            </Flex>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              className="border rounded-md p-2 text-gray-700"
+            />
 
-            <Button
-              type="submit"
-              size="3"
-              mb="4"
-              disabled={mutation.status === 'pending'}
-            >
-              {mutation.status === 'pending' ? 'Logging in...' : 'Login'}
+            <Button type="submit" size="3" disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? 'Logging in...' : 'Login'}
             </Button>
           </form>
 

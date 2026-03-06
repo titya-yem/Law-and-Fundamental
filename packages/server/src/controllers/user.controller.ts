@@ -91,5 +91,5 @@ export const logout: RequestHandler = (req, res) => {
         sameSite: "lax"
     });
     
-    res.json({ message: "Logged out "});
+    res.json({ message: "Logged out successfully"});
 };

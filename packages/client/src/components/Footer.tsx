@@ -1,10 +1,6 @@
 import { motion } from 'framer-motion';
 import * as Separator from '@radix-ui/react-separator';
-import {
-  NavbarPublic,
-  NavbarGuest,
-  NavbarPrivate,
-} from '@/constants/NavbarLists';
+import { NavbarPublic, NavbarPrivate } from '@/constants/NavbarLists';
 import { useAuth } from '@/hooks/useAuth';
 
 const Footer = () => {
@@ -14,7 +10,7 @@ const Footer = () => {
   const allLinks = () => {
     if (isLoading) return [];
     if (user) return [...NavbarPublic, ...NavbarPrivate];
-    return [...NavbarPublic, ...NavbarGuest];
+    return [...NavbarPublic];
   };
 
   return (

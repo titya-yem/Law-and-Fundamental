@@ -1,6 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export interface User {
   id: number;
@@ -9,18 +8,16 @@ export interface User {
 
 export const useAuth = () => {
   return useQuery<User | null>({
-    queryKey: ['me'],
+    queryKey: ["auth"],
     queryFn: async () => {
-      const token = Cookies.get('token');
-      if (!token) return null;
-
       try {
-        const decoded = jwtDecode<User>(token);
-        return decoded;
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/auth/me`, {
+          withCredentials: true,
+        });
+        return res.data;
       } catch {
         return null;
       }
     },
-    staleTime: 60 * 60 * 1000, // 60 minutes
   });
 };

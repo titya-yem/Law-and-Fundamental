@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import MainLayout from './layouts/MainLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import AuthLayout from './layouts/AuthLayout';
+import ProtectedRoute from './lib/ProtectedRoute';
 
 const queryClient = new QueryClient();
 
@@ -32,7 +33,14 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/login" element={<Login />} />
             </Route>
 
-            <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
               <Route index element={<Dashboard />} />
             </Route>
           </Routes>

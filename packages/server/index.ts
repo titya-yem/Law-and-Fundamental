@@ -2,8 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser"
-// import helmet from "helmet";
-// import morgan from "morgan"
+import helmet from "helmet";
+import morgan from "morgan"
 import userRouter from "./src/routes/user.route"
 import caseRouter from "./src/routes/case.route"
 
@@ -16,8 +16,8 @@ app.use(cors({
   credentials: true,
 }))
 app.use(express.json());  // anable to read from body
-// app.use(helmet()); 
-// app.use(morgan("dev"));
+app.use(helmet()); 
+app.use(morgan("dev"));
 app.use(cookieParser());
 
 app.use("/api/auth", userRouter);

@@ -1,16 +1,9 @@
-export interface NavbarProps {
-  label: string;
-  link: string;
-}
-
-export const NavbarPublic: NavbarProps[] = [
+export const NavbarPublic = [
   { label: "Home", link: "/" },
-  { label: "Dashboard", link: "/dashboard" }
-];
-
-export const NavbarGuest: NavbarProps[] = [
   { label: "Login", link: "/login" },
-  { label: "Register", link: "/register" }
+  { label: "Register", link: "/register" },
 ];
 
-export const NavbarPrivate: NavbarProps[] = [];
+export const NavbarPrivate = [
+  { label: "Dashboard", link: "/dashboard" },
+];
