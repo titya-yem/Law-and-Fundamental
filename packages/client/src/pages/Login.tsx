@@ -32,7 +32,7 @@ const Login = () => {
       queryClient.invalidateQueries({ queryKey: ['me'] });
 
       // Redirect to dashboard
-      navigate('/dashboard', { replace: true });
+      navigate('/', { replace: true });
     },
 
     onError: (error) => {

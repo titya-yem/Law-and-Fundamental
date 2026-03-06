@@ -2,16 +2,25 @@ import { motion } from 'framer-motion';
 import * as Separator from '@radix-ui/react-separator';
 import { NavbarPublic, NavbarPrivate } from '@/constants/NavbarLists';
 import { useAuth } from '@/hooks/useAuth';
+import { useLogout } from '@/hooks/useLogout';
 
 const Footer = () => {
   const { data: user, isLoading } = useAuth();
+  const logout = useLogout();
   const currentYear = new Date().getFullYear();
 
+  // Determine links based on login state
   const allLinks = () => {
     if (isLoading) return [];
-    if (user) return [...NavbarPublic, ...NavbarPrivate];
+    if (user) {
+      // Logged in: Home + Dashboard
+      return [{ label: 'Home', link: '/' }, ...NavbarPrivate];
+    }
+    // Logged out: Home + Login + Register
     return [...NavbarPublic];
   };
+
+  const isLoggedIn = !!user;
 
   return (
     <motion.footer
@@ -22,7 +31,6 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Separator.Root className="bg-gray-200 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full" />
 
-        {/* Copyright and Links Section */}
         <motion.div className="py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <motion.p
             className="text-sm text-gray-600 text-center md:text-left"
@@ -44,6 +52,18 @@ const Footer = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-px bg-gray-900 transition-all duration-300 group-hover:w-full" />
               </motion.a>
             ))}
+
+            {/* Logout button only for logged-in users */}
+            {isLoggedIn && (
+              <motion.button
+                onClick={logout}
+                whileHover={{ scale: 1.05, y: -1 }}
+                className="text-sm cursor-pointer text-gray-600 hover:text-gray-900 transition-colors duration-200 relative group"
+              >
+                Logout
+                <span className="absolute bottom-0 left-0 w-0 h-px bg-gray-900 transition-all duration-300 group-hover:w-full" />
+              </motion.button>
+            )}
           </nav>
         </motion.div>
       </div>
