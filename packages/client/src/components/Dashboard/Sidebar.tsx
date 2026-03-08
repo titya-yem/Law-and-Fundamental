@@ -1,8 +1,10 @@
-import React from 'react';
+import { useState } from 'react';
 
 const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState();
+
   return (
-    <div className="w-64 h-full bg-gray-100 p-4">
+    <div className="p-4 *:text-white bg-blue-950">
       <ul>
         <li>Dashboard</li>
         <li>Settings</li>
