@@ -62,9 +62,9 @@ const Testimonials = () => {
             viewport={{ once: true }}
             className="flex flex-col justify-between items-center gap-y-4 max-w-120"
           >
-            {testimonials.map((t, idx) => (
+            {testimonials.map((t, id) => (
               <motion.div
-                key={idx}
+                key={id}
                 variants={cardVariants}
                 whileHover={{ scale: 1.02 }}
                 className="flex flex-col gap-x-2 md:flex-row *:text-white p-4 md:p-2 rounded-md"
