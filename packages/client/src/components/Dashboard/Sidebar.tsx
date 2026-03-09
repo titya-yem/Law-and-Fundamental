@@ -17,13 +17,14 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
       );
       return res.data;
     },
+
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 
   return (
     <>
-      {/* Overlay for mobile */}
+      {/* Overlay (for mobile) */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
@@ -36,52 +37,19 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
         className={`
           fixed lg:static
           top-0 left-0
-          h-full w-64
+          h-full w-72
           bg-gray-900 text-white
-          transform transition-transform duration-300 ease-in-out
+          transform transition-transform duration-300
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           lg:translate-x-0
         `}
       >
-        {/* Header */}
-        <div className="p-6 font-bold text-lg border-b border-blue-800 flex flex-col gap-2">
-          <span>Dashboard</span>
-          {/* User info */}
-          {isLoading && (
-            <span className="text-sm font-normal">Loading user...</span>
-          )}
-          {isError && (
-            <span className="text-sm font-normal text-red-500">
-              Failed to load user
-            </span>
-          )}
-          {data && (
-            <span className="text-sm font-normal text-gray-300">
-              Hello, {data.name}
-            </span>
-          )}
-        </div>
+        <div className="p-6 font-bold text-lg">Dashboard</div>
 
-        {/* Navigation */}
         <ul className="p-4 space-y-3">
-          <li
-            className="cursor-pointer hover:text-blue-300"
-            onClick={() => setIsOpen(false)}
-          >
-            Dashboard
-          </li>
-          <li
-            className="cursor-pointer hover:text-blue-300"
-            onClick={() => setIsOpen(false)}
-          >
-            Settings
-          </li>
-          <li
-            className="cursor-pointer hover:text-blue-300"
-            onClick={() => setIsOpen(false)}
-          >
-            Profile
-          </li>
+          <li className="cursor-pointer hover:text-blue-300">Dashboard</li>
+          <li className="cursor-pointer hover:text-blue-300">Settings</li>
+          <li className="cursor-pointer hover:text-blue-300">Profile</li>
         </ul>
       </aside>
     </>
