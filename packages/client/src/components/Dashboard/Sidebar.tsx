@@ -2,8 +2,10 @@ import type { userType } from '@/types/UserTypes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Fetch from '../Fetch';
-import { Box, Flex, Heading, Text } from '@radix-ui/themes';
+import { Box, Text } from '@radix-ui/themes';
 import logo from '@/assets/Logo.jpg';
+import { sidebarLists } from '@/constants/SidebarLists';
+import { Link } from 'react-router-dom';
 
 type Props = {
   isOpen: boolean;
@@ -27,7 +29,9 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
 
   console.log(data);
 
-  <Fetch isloading={isLoading} isError={isError} />;
+  if (isLoading || isError) {
+    return <Fetch isloading={isLoading} isError={isError} />;
+  }
 
   return (
     <>
@@ -41,35 +45,42 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
 
       {/* Sidebar */}
       <aside
-        className={`
-          fixed lg:static
-          top-0 left-0
-          h-full w-72
-          bg-gray-900 text-white
-          transform transition-transform duration-300
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0
+        className={`fixed lg:static top-0 left-0 h-full w-72 bg-gray-900 text-white
+          transform transition-transform duration-300 z-50
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
         `}
       >
-        <Flex justify="between" align="center" gapX="6" p="4">
-          <img src={logo} alt="Profile Picture" className="h-11 rounded-full" />
+        <div className=" p-4">
+          <img
+            src={logo}
+            alt="Profile Picture"
+            className="h-14 mb-4 mx-auto rounded-full"
+          />
 
           <Box className="*:font-medium">
-            <h4 className="text-base">{data?.userName}</h4>
+            <h4 className="text-lg">{data?.userName}</h4>
             <Text as="p" className="text-sm">
               Email: <Text>{data?.email}</Text>
             </Text>
-            <Text as="p">
+            <Text as="p" className="text-sm">
               Role: <Text className="uppercase">{data?.role}</Text>
             </Text>
           </Box>
-        </Flex>
+        </div>
 
-        <ul className="p-4 space-y-3">
-          <li className="cursor-pointer hover:text-blue-300">Dashboard</li>
-          <li className="cursor-pointer hover:text-blue-300">Settings</li>
-          <li className="cursor-pointer hover:text-blue-300">Profile</li>
-        </ul>
+        <div>
+          {sidebarLists.map(({ img, label, link }) => (
+            <Link
+              key={label}
+              to={link}
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 p-3 hover:bg-gray-800"
+            >
+              <img src={img} alt={`${label} logo`} className="w-5" />
+              {label}
+            </Link>
+          ))}
+        </div>
       </aside>
     </>
   );

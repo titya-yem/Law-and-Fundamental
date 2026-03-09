@@ -8,12 +8,14 @@ import './index.css';
 
 import Register from './pages/Register';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard/Dashboard';
 import Home from './pages/Home';
 import MainLayout from './layouts/MainLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import AuthLayout from './layouts/AuthLayout';
 import ProtectedRoute from './lib/ProtectedRoute';
+import Users from './pages/Dashboard/Users';
+import Profile from './pages/Dashboard/Profile';
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,8 @@ createRoot(document.getElementById('root')!).render(
               }
             >
               <Route index element={<Dashboard />} />
+              <Route path="users" element={<Users />} />
+              <Route path="profile" element={<Profile />} />
             </Route>
           </Routes>
         </BrowserRouter>
