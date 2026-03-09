@@ -1,6 +1,9 @@
 import type { userType } from '@/types/UserTypes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import Fetch from '../Fetch';
+import { Box, Flex, Heading, Text } from '@radix-ui/themes';
+import logo from '@/assets/Logo.jpg';
 
 type Props = {
   isOpen: boolean;
@@ -21,6 +24,10 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
+
+  console.log(data);
+
+  <Fetch isloading={isLoading} isError={isError} />;
 
   return (
     <>
@@ -44,7 +51,19 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
           lg:translate-x-0
         `}
       >
-        <div className="p-6 font-bold text-lg">Dashboard</div>
+        <Flex justify="between" align="center" gapX="6" p="4">
+          <img src={logo} alt="Profile Picture" className="h-11 rounded-full" />
+
+          <Box className="*:font-medium">
+            <h4 className="text-base">{data?.userName}</h4>
+            <Text as="p" className="text-sm">
+              Email: <Text>{data?.email}</Text>
+            </Text>
+            <Text as="p">
+              Role: <Text className="uppercase">{data?.role}</Text>
+            </Text>
+          </Box>
+        </Flex>
 
         <ul className="p-4 space-y-3">
           <li className="cursor-pointer hover:text-blue-300">Dashboard</li>

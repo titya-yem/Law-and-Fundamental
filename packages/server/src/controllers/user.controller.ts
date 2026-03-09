@@ -49,7 +49,7 @@ export const login: RequestHandler = async (req, res) => {
 
         // using jwt to sign with id and role, JWT_SECRET, and expire in 4h
         const token = jwt.sign(
-            { id: user.id, role: user.role},
+            { role: user.role, userName: user.name, email: user.email},
             JWT_SERECT,
             { expiresIn: "2h"}
         )
