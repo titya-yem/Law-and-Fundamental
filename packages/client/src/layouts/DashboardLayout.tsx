@@ -19,10 +19,14 @@ const DashboardLayout = () => {
           {/* Toggle Button (usually mobile only) */}
           <Button
             aria-label="Toggle sidebar"
-            onClick={() => setSidebarOpen((prev) => !prev)}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
             className="mb-4 lg:hidden bg-blue-900 text-white"
           >
-            <img src={toggle} alt="" className="w-5 h-5" />
+            <img
+              src={toggle}
+              alt="dashboard toggle button"
+              className="w-5 h-5"
+            />
           </Button>
 
           <Outlet />

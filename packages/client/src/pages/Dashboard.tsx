@@ -19,7 +19,7 @@ import DashboardUpdate from '@/components/Dashboard/DashboardUpdate';
 
 const CASES_PER_PAGE = 10;
 
-const CasesDashboard = () => {
+const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -170,4 +170,4 @@ const CasesDashboard = () => {
   );
 };
 
-export default CasesDashboard;
+export default Dashboard;
