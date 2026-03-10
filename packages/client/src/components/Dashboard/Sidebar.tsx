@@ -45,41 +45,47 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static top-0 left-0 h-full w-72 bg-gray-900 text-white
+        className={`fixed lg:static top-0 left-0 h-full w-68 bg-gray-900 text-white
           transform transition-transform duration-300 z-50
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
         `}
       >
-        <div className=" p-4">
-          <img
-            src={logo}
-            alt="Profile Picture"
-            className="h-14 mb-4 mx-auto rounded-full"
-          />
+        <div className="flex flex-col ">
+          <div className="py-4 px-3">
+            <img
+              src={logo}
+              alt="Profile Picture"
+              className="h-14 mb-4 mx-auto rounded-full"
+            />
 
-          <Box className="*:font-medium">
-            <h4 className="text-lg">{data?.userName}</h4>
-            <Text as="p" className="text-sm">
-              Email: <Text>{data?.email}</Text>
-            </Text>
-            <Text as="p" className="text-sm">
-              Role: <Text className="uppercase">{data?.role}</Text>
-            </Text>
-          </Box>
-        </div>
+            <Box className="*:font-medium">
+              <h4 className="text-lg">{data?.userName}</h4>
+              <Text as="p" className="text-sm">
+                Email: <Text>{data?.email}</Text>
+              </Text>
+              <Text as="p" className="text-sm">
+                Role: <Text className="uppercase">{data?.role}</Text>
+              </Text>
+            </Box>
+          </div>
 
-        <div>
-          {sidebarLists.map(({ img, label, link }) => (
-            <Link
-              key={label}
-              to={link}
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 p-3 hover:bg-gray-800"
-            >
-              <img src={img} alt={`${label} logo`} className="w-5" />
-              {label}
-            </Link>
-          ))}
+          <div>
+            {sidebarLists.map(({ img, label, link }) => (
+              <Link
+                key={label}
+                to={link}
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 p-3 hover:bg-gray-800"
+              >
+                <img
+                  src={img}
+                  alt={`${label} logo`}
+                  className="w-5 invert-100"
+                />
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
       </aside>
     </>
