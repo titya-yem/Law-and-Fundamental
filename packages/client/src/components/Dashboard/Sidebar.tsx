@@ -6,6 +6,8 @@ import { Box, Text } from '@radix-ui/themes';
 import logo from '@/assets/Logo.jpg';
 import { sidebarLists } from '@/constants/SidebarLists';
 import { Link } from 'react-router-dom';
+import logoutSVG from '@/assets/logout.svg';
+import { useLogout } from '@/hooks/useLogout';
 
 type Props = {
   isOpen: boolean;
@@ -27,11 +29,10 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
     refetchOnWindowFocus: false,
   });
 
-  console.log(data);
+  const logout = useLogout();
 
-  if (isLoading || isError) {
+  if (isLoading || isError)
     return <Fetch isloading={isLoading} isError={isError} />;
-  }
 
   return (
     <>
@@ -50,11 +51,11 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
         `}
       >
-        <div className="flex flex-col ">
-          <div className="py-4 px-3">
+        <div className="grid grid-rows-2">
+          <Box className="py-4 px-3">
             <img
               src={logo}
-              alt="Profile Picture"
+              alt="Logo picture"
               className="h-14 mb-4 mx-auto rounded-full"
             />
 
@@ -67,9 +68,9 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
                 Role: <Text className="uppercase">{data?.role}</Text>
               </Text>
             </Box>
-          </div>
+          </Box>
 
-          <div>
+          <Box className="pt-12">
             {sidebarLists.map(({ img, label, link }) => (
               <Link
                 key={label}
@@ -85,8 +86,16 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
                 {label}
               </Link>
             ))}
-          </div>
+          </Box>
         </div>
+
+        <button
+          onClick={logout}
+          className="absolute bottom-6 left-4 flex gap-x-3 hover:bg-gray-800 cursor-pointer"
+        >
+          <img src={logoutSVG} alt="logout svg" className="w-5 invert-100" />
+          <Text as="p">Logout</Text>
+        </button>
       </aside>
     </>
   );

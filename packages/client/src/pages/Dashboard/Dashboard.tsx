@@ -1,15 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  Dialog,
-  Heading,
-  Text,
-} from '@radix-ui/themes';
+import { Badge, Box, Button, Container, Dialog, Text } from '@radix-ui/themes';
 
 import SearchBar from '@/components/Dashboard/SearchBar';
 import Pagination from '@/components/Dashboard/Pagination';
@@ -68,94 +60,97 @@ const Dashboard = () => {
   }
 
   return (
-    <Container className="py-2 h-screen bg-cyan-50">
-      <Box className="rounded-xl p-4 shadow-sm h-162.5 flex flex-col bg-gray-50">
+    <Container className="p-6">
+      <Box className="bg-white rounded-xl shadow-sm p-6">
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-4">
-          <Heading size="4">Cases</Heading>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-semibold">Cases</h2>
+            <p className="text-sm text-gray-500">
+              {filteredCases.length} Cases Found
+            </p>
+          </div>
+
           <SearchBar value={searchTerm} onChange={handleSearchChange} />
         </div>
 
         {/* TABLE */}
         <Box className="flex-1 overflow-auto lg:overflow-hidden">
-          <div>
-            <div className="min-w-200">
-              {/* Header Row */}
-              <div className="grid grid-cols-7 gap-2 p-3 border-b border-gray-300 text-center font-medium">
-                <Text>Case #</Text>
-                <Text>Title</Text>
-                <Text>Content</Text>
-                <Text>Status</Text>
-                <Text>Start Date</Text>
-                <Text>Finished Date</Text>
-                <Text>Update</Text>
-              </div>
-
-              {/* Data Rows */}
-              {paginatedCases.map((item) => {
-                const startDate = new Date(
-                  item.start_date
-                ).toLocaleDateString();
-                const finishedDate = item.finished_date
-                  ? new Date(item.finished_date).toLocaleDateString()
-                  : '-';
-
-                return (
-                  <div
-                    key={item.id}
-                    className="grid grid-cols-7 gap-2 p-3 border-b border-gray-200 text-center text-sm"
-                  >
-                    <Text>{item.case_number}</Text>
-                    <Text className="truncate">{item.title}</Text>
-
-                    {/* Content Dialog */}
-                    <Dialog.Root>
-                      <Dialog.Trigger>
-                        <Button size="1" variant="soft">
-                          View
-                        </Button>
-                      </Dialog.Trigger>
-                      <Dialog.Content size="2" maxWidth="400px">
-                        <Text as="p" size="2">
-                          {item.content}
-                        </Text>
-                      </Dialog.Content>
-                    </Dialog.Root>
-
-                    {/* Status Badge */}
-                    <Badge
-                      size="2"
-                      className="mx-auto"
-                      color={
-                        item.status === 'open'
-                          ? 'cyan'
-                          : item.status === 'close'
-                            ? 'crimson'
-                            : 'orange'
-                      }
-                    >
-                      {item.status}
-                    </Badge>
-
-                    <Text>{startDate}</Text>
-                    <Text>{finishedDate}</Text>
-
-                    {/* UPDATE */}
-                    <DashboardUpdate
-                      caseItem={{
-                        id: item.id,
-                        caseNumber: item.case_number,
-                        title: item.title,
-                        content: item.content,
-                        status: item.status,
-                        startDate: item.start_date,
-                        finishedDate: item.finished_date,
-                      }}
-                    />
-                  </div>
-                );
-              })}
+          <div className="min-w-200">
+            {/* Header Row */}
+            <div className="hidden lg:grid grid-cols-7 gap-2 p-3 border-b border-gray-300 text-center font-medium">
+              <Text>Case #</Text>
+              <Text>Title</Text>
+              <Text>Content</Text>
+              <Text>Status</Text>
+              <Text>Start Date</Text>
+              <Text>Finished Date</Text>
+              <Text>Update</Text>
             </div>
+
+            {/* Data Rows */}
+            {paginatedCases.map((item) => {
+              const startDate = new Date(item.start_date).toLocaleDateString();
+              const finishedDate = item.finished_date
+                ? new Date(item.finished_date).toLocaleDateString()
+                : '-';
+
+              return (
+                <div
+                  key={item.id}
+                  className="grid grid-cols-7 items-center p-4 text-sm
+border-b hover:bg-gray-50 transition"
+                >
+                  <Text>{item.case_number}</Text>
+                  <Text className="truncate">{item.title}</Text>
+
+                  {/* Content Dialog */}
+                  <Dialog.Root>
+                    <Dialog.Trigger>
+                      <Button size="1" variant="soft">
+                        View
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content size="2" maxWidth="400px">
+                      <Text as="p" size="2">
+                        {item.content}
+                      </Text>
+                    </Dialog.Content>
+                  </Dialog.Root>
+
+                  {/* Status Badge */}
+                  <Badge
+                    size="2"
+                    className="mx-auto"
+                    color={
+                      item.status === 'open'
+                        ? 'cyan'
+                        : item.status === 'close'
+                          ? 'crimson'
+                          : 'orange'
+                    }
+                  >
+                    {item.status}
+                  </Badge>
+
+                  <Text>{startDate}</Text>
+                  <Text>{finishedDate}</Text>
+
+                  {/* UPDATE */}
+                  <DashboardUpdate
+                    caseItem={{
+                      id: item.id,
+                      caseNumber: item.case_number,
+                      title: item.title,
+                      content: item.content,
+                      status: item.status,
+                      startDate: item.start_date,
+                      finishedDate: item.finished_date,
+                    }}
+                  />
+                </div>
+              );
+            })}
           </div>
         </Box>
 

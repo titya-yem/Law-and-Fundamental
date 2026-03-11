@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Sidebar from '@/components/Dashboard/Sidebar';
-import Footer from '@/components/Footer';
 import { Outlet } from 'react-router';
 import { Button } from '@radix-ui/themes';
 import toggle from '@/assets/Toggle.svg';
@@ -9,31 +8,23 @@ const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+    <div className="flex min-h-screen bg-[#f3f4f6]">
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
-        {/* Main Content */}
-        <main className="flex-1 p-4">
-          {/* Toggle Button (usually mobile only) */}
-          <Button
-            aria-label="Toggle sidebar"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="mb-4 lg:hidden bg-blue-900 text-white"
-          >
-            <img
-              src={toggle}
-              alt="dashboard toggle button"
-              className="w-5 h-5"
-            />
-          </Button>
+      {/* Main */}
+      <main className="flex-1 p-6">
+        {/* Mobile toggle */}
+        <Button
+          aria-label="Toggle sidebar"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="mb-6 lg:hidden"
+        >
+          <img src={toggle} alt="toggle" className="w-5 h-5" />
+        </Button>
 
-          <Outlet />
-        </main>
-      </div>
-
-      <Footer />
+        <Outlet />
+      </main>
     </div>
   );
 };
