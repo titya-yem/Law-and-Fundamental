@@ -52,7 +52,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
         `}
       >
         <div className="grid grid-rows-2">
-          <Box className="py-4 px-3">
+          <div className="flex flex-col md:flex-row py-4 px-3">
             <img
               src={logo}
               alt="Logo picture"
@@ -68,7 +68,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
                 Role: <Text className="uppercase">{data?.role}</Text>
               </Text>
             </Box>
-          </Box>
+          </div>
 
           <Box className="pt-12">
             {sidebarLists.map(({ img, label, link }) => (

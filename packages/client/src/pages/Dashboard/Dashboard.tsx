@@ -55,16 +55,15 @@ const Dashboard = () => {
     return filteredCases.slice(start, start + CASES_PER_PAGE);
   }, [filteredCases, safeCurrentPage]);
 
-  if (isLoading || isError) {
+  if (isLoading || isError)
     return <IsFetching isLoading={isLoading} isError={isError} data={cases} />;
-  }
 
   return (
-    <Container className="p-6">
-      <Box className="bg-white rounded-xl shadow-sm p-6">
+    <Container className="px-4">
+      <Box className="rounded-lg shadow-md p-4 bg-white">
         {/* HEADER */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
+        <div className="flex flex-col md:flex-row items-center justify-between mb-6">
+          <div className="*:text-center *:pb-1">
             <h2 className="text-2xl font-semibold">Cases</h2>
             <p className="text-sm text-gray-500">
               {filteredCases.length} Cases Found
@@ -75,10 +74,10 @@ const Dashboard = () => {
         </div>
 
         {/* TABLE */}
-        <Box className="flex-1 overflow-auto lg:overflow-hidden">
-          <div className="min-w-200">
+        <Box className="overflow-auto lg:overflow-hidden">
+          <div className="">
             {/* Header Row */}
-            <div className="hidden lg:grid grid-cols-7 gap-2 p-3 border-b border-gray-300 text-center font-medium">
+            <div className="hidden xl:grid xl:grid-cols-[100px_250px_170px_150px_150px_120px] 2xl:grid-cols-[150px_300px_200px_180px_150px_150px] border-b border-gray-300 p-4 text-center">
               <Text>Case #</Text>
               <Text>Title</Text>
               <Text>Content</Text>
@@ -98,8 +97,7 @@ const Dashboard = () => {
               return (
                 <div
                   key={item.id}
-                  className="grid grid-cols-7 items-center p-4 text-sm
-border-b hover:bg-gray-50 transition"
+                  className="grid md:grid-cols-3 gap-2 p-4 border-b text-center xl:grid-cols-[100px_250px_170px_150px_150px_120px] 2xl:grid-cols-[150px_300px_200px_180px_150px_150px] *:text-sm *:font-medium xl:gap-0 xl:border-none"
                 >
                   <Text>{item.case_number}</Text>
                   <Text className="truncate">{item.title}</Text>
