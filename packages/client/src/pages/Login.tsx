@@ -87,7 +87,7 @@ const Login = () => {
           <form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 w-full"
+            className="flex flex-col gap-4 w-full pb-4"
           >
             <input
               type="email"

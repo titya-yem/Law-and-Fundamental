@@ -67,7 +67,7 @@ const DashboardLayout = () => {
               <img
                 src={logo}
                 alt="Logo"
-                className="hidden lg:flex h-12 rounded-full object-cover border border-gray-700"
+                className="hidden lg:flex h-12 rounded-full object-cover"
               />
             </div>
           </div>

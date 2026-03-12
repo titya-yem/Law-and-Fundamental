@@ -107,7 +107,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
 
         <button
           onClick={logout}
-          className="absolute bottom-6 left-4 flex gap-x-3 hover:bg-gray-800 cursor-pointer"
+          className="absolute bottom-6 left-4 w-73 flex gap-x-3 px-4 py-3 rounded-xl transition  hover:bg-gray-800 cursor-pointer"
         >
           <img src={logoutSVG} alt="logout svg" className="w-5 invert-100" />
           <Text as="p">Logout</Text>
