@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useOutletContext } from 'react-router';
 import axios from 'axios';
 import { Badge, Box, Button, Container, Dialog, Text } from '@radix-ui/themes';
 
-import SearchBar from '@/components/Dashboard/SearchBar';
 import Pagination from '@/components/Dashboard/Pagination';
 import IsFetching from '@/components/IsFetching';
 import type { Case } from '@/types/DashboardTypes';
@@ -11,8 +11,12 @@ import DashboardUpdate from '@/components/Dashboard/DashboardUpdate';
 
 const CASES_PER_PAGE = 10;
 
+type LayoutContext = {
+  searchTerm: string;
+};
+
 const Dashboard = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const { searchTerm } = useOutletContext<LayoutContext>();
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -26,17 +30,14 @@ const Dashboard = () => {
         `${import.meta.env.VITE_SERVER_URL}/api/case/getAll`,
         { withCredentials: true }
       );
+
       return Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
     },
   });
 
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    setCurrentPage(1);
-  };
-
   const filteredCases = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
+
     return cases.filter(
       (c) =>
         c.case_number.toLowerCase().includes(term) ||
@@ -48,6 +49,7 @@ const Dashboard = () => {
     1,
     Math.ceil(filteredCases.length / CASES_PER_PAGE)
   );
+
   const safeCurrentPage = Math.min(currentPage, totalPages);
 
   const paginatedCases = useMemo(() => {
@@ -62,21 +64,19 @@ const Dashboard = () => {
     <Container className="px-4">
       <Box className="rounded-lg shadow-md p-4 bg-white">
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6">
-          <div className="*:text-center *:pb-1">
+        <div className="mb-2">
+          <div className="*:text-center md:*:text-start *:pb-1">
             <h2 className="text-2xl font-semibold">Cases</h2>
             <p className="text-sm text-gray-500">
               {filteredCases.length} Cases Found
             </p>
           </div>
-
-          <SearchBar value={searchTerm} onChange={handleSearchChange} />
         </div>
 
         {/* TABLE */}
         <Box className="overflow-auto lg:overflow-hidden">
-          <div className="">
-            {/* Header Row */}
+          <div>
+            {/* HEADER ROW */}
             <div className="hidden xl:grid xl:grid-cols-[100px_250px_170px_150px_150px_120px] 2xl:grid-cols-[150px_300px_200px_180px_150px_150px] border-b border-gray-300 p-4 text-center">
               <Text>Case #</Text>
               <Text>Title</Text>
@@ -87,9 +87,10 @@ const Dashboard = () => {
               <Text>Update</Text>
             </div>
 
-            {/* Data Rows */}
+            {/* DATA ROWS */}
             {paginatedCases.map((item) => {
               const startDate = new Date(item.start_date).toLocaleDateString();
+
               const finishedDate = item.finished_date
                 ? new Date(item.finished_date).toLocaleDateString()
                 : '-';
@@ -100,15 +101,17 @@ const Dashboard = () => {
                   className="grid md:grid-cols-3 gap-2 p-4 border-b text-center xl:grid-cols-[100px_250px_170px_150px_150px_120px] 2xl:grid-cols-[150px_300px_200px_180px_150px_150px] *:text-sm *:font-medium xl:gap-0 xl:border-none"
                 >
                   <Text>{item.case_number}</Text>
+
                   <Text className="truncate">{item.title}</Text>
 
-                  {/* Content Dialog */}
+                  {/* CONTENT DIALOG */}
                   <Dialog.Root>
                     <Dialog.Trigger>
                       <Button size="1" variant="soft">
                         View
                       </Button>
                     </Dialog.Trigger>
+
                     <Dialog.Content size="2" maxWidth="400px">
                       <Text as="p" size="2">
                         {item.content}
@@ -116,7 +119,7 @@ const Dashboard = () => {
                     </Dialog.Content>
                   </Dialog.Root>
 
-                  {/* Status Badge */}
+                  {/* STATUS */}
                   <Badge
                     size="2"
                     className="mx-auto"
@@ -132,6 +135,7 @@ const Dashboard = () => {
                   </Badge>
 
                   <Text>{startDate}</Text>
+
                   <Text>{finishedDate}</Text>
 
                   {/* UPDATE */}
