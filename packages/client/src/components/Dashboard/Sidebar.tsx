@@ -5,9 +5,9 @@ import Fetch from '../Fetch';
 import { Box, Text } from '@radix-ui/themes';
 import logo from '@/assets/Logo.jpg';
 import { sidebarLists } from '@/constants/SidebarLists';
-import { Link } from 'react-router-dom';
 import logoutSVG from '@/assets/logout.svg';
 import { useLogout } from '@/hooks/useLogout';
+import { NavLink } from 'react-router-dom';
 
 type Props = {
   isOpen: boolean;
@@ -38,28 +38,29 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
     <>
       {/* Overlay (for mobile) */}
       {isOpen && (
-        <div
+        <button
           onClick={() => setIsOpen(false)}
+          aria-label="Close sidebar"
           className="fixed inset-0 bg-black/10 z-40 lg:hidden"
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static top-0 left-0 h-full w-68 bg-gray-900 text-white
+        className={`fixed lg:static top-0 left-0 h-screen lg:w-80 shrink-0 rounded-r-lg bg-gray-900 text-white
           transform transition-transform duration-300 z-50
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
         `}
       >
         <div className="grid grid-rows-2">
-          <div className="flex flex-col md:flex-row py-4 px-3">
+          <div className="flex flex-col justify-center lg:flex-row items-center py-4 px-3">
             <img
               src={logo}
-              alt="Logo picture"
-              className="h-14 mb-4 mx-auto rounded-full"
+              alt="Logo"
+              className="h-12 rounded-full object-cover border border-gray-700"
             />
 
-            <Box className="*:font-medium">
+            <Box className="lg:pl-2 *:font-medium">
               <h4 className="text-lg">{data?.userName}</h4>
               <Text as="p" className="text-sm">
                 Email: <Text>{data?.email}</Text>
@@ -70,21 +71,36 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
             </Box>
           </div>
 
-          <Box className="pt-12">
+          <Box className=" space-y-2">
             {sidebarLists.map(({ img, label, link }) => (
-              <Link
+              <NavLink
                 key={label}
                 to={link}
+                end={link === '/dashboard'}
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 p-3 hover:bg-gray-800"
+                className={({ isActive }) =>
+                  `relative flex items-center gap-3 px-4 py-3 mx-3 rounded-xl transition
+                  ${
+                    isActive
+                      ? 'text-xl bg-gray-200 text-purple-600 font-medium'
+                      : 'text-gray-300 hover:bg-gray-800'
+                  }`
+                }
               >
-                <img
-                  src={img}
-                  alt={`${label} logo`}
-                  className="w-5 invert-100"
-                />
-                {label}
-              </Link>
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <span className="absolute -left-3 w-1.5 h-12 bg-purple-500 rounded-r-lg"></span>
+                    )}
+                    <img
+                      src={img}
+                      alt={`${label} logo`}
+                      className={`w-5 ${isActive ? 'w-7' : 'invert-100'}`}
+                    />
+                    {label}
+                  </>
+                )}
+              </NavLink>
             ))}
           </Box>
         </div>
