@@ -80,7 +80,9 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger>
-        <Button size="1">Edit</Button>
+        <button className="md:text-base px-8 py-1 rounded-sm md:rounded-md text-white bg-purple-600">
+          Edit
+        </button>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="900px">
@@ -91,14 +93,14 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-2 gap-4 mt-4">
-            {/* ---------- Title (Full Width) ---------- */}
+            {/*Title*/}
             <div className="col-span-2">
               <Text weight="medium">Title</Text>
               <TextField.Root {...register('title')} />
               {errors.title && <Text color="red">{errors.title.message}</Text>}
             </div>
 
-            {/* ---------- Content (Full Width) ---------- */}
+            {/*Content*/}
             <div className="col-span-2">
               <Text weight="medium">Content</Text>
               <Controller
@@ -116,7 +118,7 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
               )}
             </div>
 
-            {/* ---------- Case Number ---------- */}
+            {/*Case Number*/}
             <div>
               <Text weight="medium">Case Number</Text>
               <TextField.Root {...register('caseNumber')} />
@@ -125,7 +127,7 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
               )}
             </div>
 
-            {/* ---------- Status ---------- */}
+            {/*Status*/}
             <Grid>
               <Text weight="medium">Status</Text>
               <Controller
@@ -147,13 +149,13 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
               />
             </Grid>
 
-            {/* ---------- Start Date ---------- */}
+            {/*Start Date*/}
             <div>
               <Text weight="medium">Start Date</Text>
               <TextField.Root type="date" {...register('startDate')} />
             </div>
 
-            {/* ---------- Finished Date ---------- */}
+            {/*Finished Date*/}
             <div>
               <Text weight="medium">Finished Date</Text>
               <TextField.Root type="date" {...register('finishedDate')} />
@@ -163,7 +165,7 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
             </div>
           </div>
 
-          {/* ---------- Actions ---------- */}
+          {/*Actions*/}
           <Flex gap="3" mt="6" justify="end">
             <DeleteCaseButton caseId={caseItem.id} />
             <Button

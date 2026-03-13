@@ -20,7 +20,7 @@ const DashboardLayout = () => {
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
       <div className="flex-1">
-        <div className="flex flex-col md:flex-row md:items-center px-4 py-4 lg:px-12 gap-3">
+        <div className="flex flex-col md:flex-row md:items-center px-4 py-4 md:py-8 lg:px-12 gap-3">
           <div className="flex flex-col items-center md:hidden gap-2">
             <div className="flex w-full justify-between items-center">
               <SearchBar value={searchTerm} onChange={handleSearchChange} />
@@ -33,7 +33,7 @@ const DashboardLayout = () => {
               </button>
             </div>
 
-            <div>
+            <div className="py-2">
               <h2 className="text-2xl font-semibold text-gray-900">Cases</h2>
               <p className="text-sm text-purple-600 font-medium text-center">
                 {caseCount} Cases Found

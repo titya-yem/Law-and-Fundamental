@@ -2,18 +2,28 @@ import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useOutletContext } from 'react-router';
 import axios from 'axios';
-import { Badge, Box, Button, Container, Dialog, Text } from '@radix-ui/themes';
+import { Box, Container, Text } from '@radix-ui/themes';
 
 import Pagination from '@/components/Dashboard/Pagination';
 import IsFetching from '@/components/IsFetching';
-import DashboardUpdate from '@/components/Dashboard/DashboardUpdate';
+import DashboardRow from '@/components/Dashboard/DashboardRow';
 import type { Case } from '@/types/DashboardTypes';
+import ActionButtons from '@/components/Dashboard/ActionButtons';
 
 const CASES_PER_PAGE = 10;
 
 type LayoutContext = {
   searchTerm: string;
   setCaseCount: (count: number) => void;
+};
+
+const fetchCases = async (): Promise<Case[]> => {
+  const res = await axios.get(
+    `${import.meta.env.VITE_SERVER_URL}/api/case/getAll`,
+    { withCredentials: true }
+  );
+
+  return Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
 };
 
 const Dashboard = () => {
@@ -24,21 +34,15 @@ const Dashboard = () => {
     data: cases = [],
     isLoading,
     isError,
-  } = useQuery<Case[]>({
+  } = useQuery({
     queryKey: ['cases'],
-    queryFn: async () => {
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/api/case/getAll`,
-        { withCredentials: true }
-      );
-
-      return Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
-    },
+    queryFn: fetchCases,
   });
 
-  /* FILTER */
   const filteredCases = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
+
+    if (!term) return cases;
 
     return cases.filter(
       (c) =>
@@ -47,24 +51,21 @@ const Dashboard = () => {
     );
   }, [cases, searchTerm]);
 
-  /* UPDATE HEADER COUNT */
   useEffect(() => {
     setCaseCount(filteredCases.length);
-  }, [filteredCases, setCaseCount]);
+  }, [filteredCases.length, setCaseCount]);
 
-  /* PAGINATION */
   const totalPages = Math.max(
     1,
     Math.ceil(filteredCases.length / CASES_PER_PAGE)
   );
 
-  const safeCurrentPage =
-    searchTerm.trim().length > 0 ? 1 : Math.min(currentPage, totalPages);
+  const page = searchTerm.trim() ? 1 : Math.min(currentPage, totalPages);
 
   const paginatedCases = useMemo(() => {
-    const start = (safeCurrentPage - 1) * CASES_PER_PAGE;
+    const start = (page - 1) * CASES_PER_PAGE;
     return filteredCases.slice(start, start + CASES_PER_PAGE);
-  }, [filteredCases, safeCurrentPage]);
+  }, [filteredCases, page]);
 
   if (isLoading || isError) {
     return <IsFetching isLoading={isLoading} isError={isError} data={cases} />;
@@ -72,10 +73,10 @@ const Dashboard = () => {
 
   return (
     <Container className="px-4 lg:px-12">
+      <ActionButtons />
       <Box className="rounded-lg shadow-md p-4 bg-white">
-        {/* TABLE */}
         <Box className="overflow-auto lg:overflow-hidden">
-          {/* TABLE HEADER */}
+          {/* HEADER */}
           <div className="hidden text-center p-4 lg:grid grid-cols-7 border-b border-gray-300">
             <Text>Case #</Text>
             <Text>Title</Text>
@@ -87,75 +88,13 @@ const Dashboard = () => {
           </div>
 
           {/* ROWS */}
-          {paginatedCases.map((item) => {
-            const startDate = new Date(item.start_date).toLocaleDateString();
-
-            const finishedDate = item.finished_date
-              ? new Date(item.finished_date).toLocaleDateString()
-              : '-';
-
-            return (
-              <div
-                key={item.id}
-                className="grid md:grid-cols-3 lg:grid-cols-7 gap-2 p-4 border-b text-center *:text-sm *:font-medium xl:gap-0 xl:border-none"
-              >
-                <Text>{item.case_number}</Text>
-                <Text className="truncate">{item.title}</Text>
-
-                {/* CONTENT */}
-                <Dialog.Root>
-                  <Dialog.Trigger>
-                    <Button size="1" variant="soft">
-                      View
-                    </Button>
-                  </Dialog.Trigger>
-
-                  <Dialog.Content size="2" maxWidth="400px">
-                    <Text as="p" size="2">
-                      {item.content}
-                    </Text>
-                  </Dialog.Content>
-                </Dialog.Root>
-
-                {/* STATUS */}
-                <Badge
-                  size="2"
-                  className="mx-auto"
-                  color={
-                    item.status === 'open'
-                      ? 'cyan'
-                      : item.status === 'close'
-                        ? 'crimson'
-                        : 'orange'
-                  }
-                >
-                  {item.status}
-                </Badge>
-
-                <Text>{startDate}</Text>
-
-                <Text>{finishedDate}</Text>
-
-                {/* UPDATE */}
-                <DashboardUpdate
-                  caseItem={{
-                    id: item.id,
-                    caseNumber: item.case_number,
-                    title: item.title,
-                    content: item.content,
-                    status: item.status,
-                    startDate: item.start_date,
-                    finishedDate: item.finished_date,
-                  }}
-                />
-              </div>
-            );
-          })}
+          {paginatedCases.map((item) => (
+            <DashboardRow key={item.id} item={item} />
+          ))}
         </Box>
 
-        {/* PAGINATION */}
         <Pagination
-          currentPage={safeCurrentPage}
+          currentPage={page}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
