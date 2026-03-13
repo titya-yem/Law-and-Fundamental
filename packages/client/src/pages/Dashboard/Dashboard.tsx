@@ -76,7 +76,7 @@ const Dashboard = () => {
         {/* TABLE */}
         <Box className="overflow-auto lg:overflow-hidden">
           {/* TABLE HEADER */}
-          <div className="hidden lg:grid grid-cols-7 border-b border-gray-300 p-4 text-center">
+          <div className="hidden text-center p-4 lg:grid grid-cols-7 border-b border-gray-300">
             <Text>Case #</Text>
             <Text>Title</Text>
             <Text>Content</Text>
@@ -100,7 +100,6 @@ const Dashboard = () => {
                 className="grid md:grid-cols-3 lg:grid-cols-7 gap-2 p-4 border-b text-center *:text-sm *:font-medium xl:gap-0 xl:border-none"
               >
                 <Text>{item.case_number}</Text>
-
                 <Text className="truncate">{item.title}</Text>
 
                 {/* CONTENT */}

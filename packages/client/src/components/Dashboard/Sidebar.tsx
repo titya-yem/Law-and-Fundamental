@@ -61,17 +61,20 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
             />
 
             <Box className="lg:pl-2 *:font-medium">
-              <h4 className="text-lg">{data?.userName}</h4>
+              <h4 className="text-lg lg:text-base">{data?.userName}</h4>
               <Text as="p" className="text-sm">
                 Email: <Text>{data?.email}</Text>
               </Text>
               <Text as="p" className="text-sm">
-                Role: <Text className="uppercase">{data?.role}</Text>
+                Role:{' '}
+                <Text className="uppercase underline underline-offset-2">
+                  {data?.role}
+                </Text>
               </Text>
             </Box>
           </div>
 
-          <Box className=" space-y-2">
+          <Box className="space-y-2">
             {sidebarLists.map(({ img, label, link }) => (
               <NavLink
                 key={label}
@@ -79,7 +82,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
                 end={link === '/dashboard'}
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
-                  `relative flex items-center gap-3 px-4 py-3 mx-3 rounded-xl transition
+                  `relative flex items-center gap-3 lg:text-sm px-4 py-3 mx-3 rounded-xl transition
                   ${
                     isActive
                       ? 'text-xl bg-gray-200 text-purple-600 font-medium'
@@ -95,7 +98,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
                     <img
                       src={img}
                       alt={`${label} logo`}
-                      className={`w-5 ${isActive ? 'w-7' : 'invert-100'}`}
+                      className={`w-5 ${isActive ? 'w-6 text-base' : 'invert-100'}`}
                     />
                     {label}
                   </>
