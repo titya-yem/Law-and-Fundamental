@@ -10,7 +10,7 @@ import DashboardRow from '@/components/Dashboard/DashboardRow';
 import type { Case } from '@/types/DashboardTypes';
 import ActionButtons from '@/components/Dashboard/ActionButtons';
 
-const CASES_PER_PAGE = 10;
+const CASES_PER_PAGE = 8;
 
 type LayoutContext = {
   searchTerm: string;
@@ -74,10 +74,10 @@ const Dashboard = () => {
   return (
     <Container className="px-4 lg:px-12">
       <ActionButtons />
-      <Box className="rounded-lg shadow-md p-4 bg-white">
+      <div className="h-[510px] flex flex-col items-end justify-between rounded-lg shadow-md p-2 bg-white">
         <Box className="overflow-auto lg:overflow-hidden">
           {/* HEADER */}
-          <div className="hidden text-center p-4 lg:grid grid-cols-7 border-b border-gray-300">
+          <div className="hidden text-center p-3 lg:grid grid-cols-7 *:font-medium border-b border-gray-300">
             <Text>Case #</Text>
             <Text>Title</Text>
             <Text>Content</Text>
@@ -93,12 +93,14 @@ const Dashboard = () => {
           ))}
         </Box>
 
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </Box>
+        <div className="pr-4">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      </div>
     </Container>
   );
 };

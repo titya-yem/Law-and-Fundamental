@@ -1,4 +1,4 @@
-import { Badge, Dialog, Text } from '@radix-ui/themes';
+import { Badge, Button, Dialog, Text } from '@radix-ui/themes';
 import DashboardUpdate from '@/components/Dashboard/DashboardUpdate';
 import type { Case } from '@/types/DashboardTypes';
 
@@ -22,7 +22,7 @@ const getStatusColor = (status: string) => {
 
 const DashboardRow = ({ item }: Props) => {
   return (
-    <div className="grid md:grid-cols-3 lg:grid-cols-7 gap-2 p-4 border-b text-center *:text-sm *:font-medium xl:gap-0 xl:border-none">
+    <div className="grid md:grid-cols-3 lg:grid-cols-7 gap-2 items-center p-2 border-b border-gray-200 text-center *:text-sm xl:gap-0">
       <Text>{item.case_number}</Text>
 
       <Text className="truncate">{item.title}</Text>
@@ -31,9 +31,7 @@ const DashboardRow = ({ item }: Props) => {
       <Dialog.Root>
         <Dialog.Trigger>
           <div>
-            <button className="md:text-base px-8 py-1 rounded-sm md:rounded-md text-white bg-gray-600">
-              View
-            </button>
+            <Button color="amber">View</Button>
           </div>
         </Dialog.Trigger>
 

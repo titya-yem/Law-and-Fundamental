@@ -20,7 +20,9 @@ export const createCase = async (
 
 export const getCasesFromDB = async () => {
     const result = await pool.query(
-        `SELECT * FROM cases`
+        `SELECT * FROM cases
+         ORDER BY id DESC
+        `
     );
     
     return result.rows

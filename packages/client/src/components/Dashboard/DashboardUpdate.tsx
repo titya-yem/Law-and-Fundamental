@@ -80,9 +80,7 @@ const DashboardUpdate = ({ caseItem }: CaseProps) => {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger>
-        <button className="md:text-base px-8 py-1 rounded-sm md:rounded-md text-white bg-purple-600">
-          Edit
-        </button>
+        <Button color="tomato">Edit</Button>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="900px">

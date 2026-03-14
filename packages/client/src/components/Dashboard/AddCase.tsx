@@ -1,5 +1,182 @@
+import { useRef, useState } from 'react';
+import {
+  Button,
+  Dialog,
+  Text,
+  TextField,
+  Select,
+  Grid,
+  Flex,
+} from '@radix-ui/themes';
+
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+
+import RichTextEditor from '@/components/Dashboard/RichTextEditor';
+import { caseFormSchema, type CaseFormValues } from '@/types/CaseForm';
+import toast from 'react-hot-toast';
+
+const toISODate = (date?: string | null) =>
+  date ? new Date(`${date}T00:00:00`).toISOString() : null;
+
 const AddCase = () => {
-  return <div>Add Case</div>;
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const editorRef = useRef<{ clear: () => void } | null>(null);
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<CaseFormValues>({
+    resolver: zodResolver(caseFormSchema),
+  });
+
+  const saveCase = useMutation({
+    mutationFn: async (data: CaseFormValues) => {
+      const payload = {
+        ...data,
+        startDate: toISODate(data.startDate),
+        finishedDate: toISODate(data.finishedDate),
+      };
+
+      const { data: response } = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/case/create`,
+        payload,
+        { withCredentials: true }
+      );
+
+      return response;
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cases'] });
+      toast.success('Case added successfully');
+
+      editorRef.current?.clear();
+      reset();
+      setOpen(false);
+    },
+
+    onError: () => {
+      toast.error('Failed to add case');
+    },
+  });
+
+  const onSubmit = (data: CaseFormValues) => {
+    saveCase.mutate(data);
+  };
+
+  return (
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Trigger>
+        <Button color="purple">Add Case</Button>
+      </Dialog.Trigger>
+
+      <Dialog.Content maxWidth="900px">
+        <Dialog.Title>Add Case</Dialog.Title>
+        <Dialog.Description>
+          Fill in the case information and details.
+        </Dialog.Description>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            {/* Title */}
+            <div className="col-span-2">
+              <Text weight="medium">Title</Text>
+              <TextField.Root {...register('title')} />
+              {errors.title && <Text color="red">{errors.title.message}</Text>}
+            </div>
+
+            {/* Content */}
+            <div className="col-span-2">
+              <Text weight="medium">Content</Text>
+              <Controller
+                name="content"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    ref={editorRef}
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.content && (
+                <Text color="red">{errors.content.message}</Text>
+              )}
+            </div>
+
+            {/* Case Number */}
+            <div>
+              <Text weight="medium">Case Number</Text>
+              <TextField.Root {...register('caseNumber')} />
+              {errors.caseNumber && (
+                <Text color="red">{errors.caseNumber.message}</Text>
+              )}
+            </div>
+
+            {/* Status */}
+            <Grid>
+              <Text weight="medium">Status</Text>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Select.Root
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <Select.Trigger />
+                    <Select.Content>
+                      <Select.Item value="open">Open</Select.Item>
+                      <Select.Item value="ongoing">Ongoing</Select.Item>
+                      <Select.Item value="close">Closed</Select.Item>
+                    </Select.Content>
+                  </Select.Root>
+                )}
+              />
+            </Grid>
+
+            {/* Start Date */}
+            <div>
+              <Text weight="medium">Start Date</Text>
+              <TextField.Root type="date" {...register('startDate')} />
+            </div>
+
+            {/* Finished Date */}
+            <div>
+              <Text weight="medium">Finished Date</Text>
+              <TextField.Root type="date" {...register('finishedDate')} />
+              {errors.finishedDate && (
+                <Text color="red">{errors.finishedDate.message}</Text>
+              )}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <Flex gap="3" mt="6" justify="end">
+            <Button
+              type="button"
+              variant="soft"
+              color="gray"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
+
+            <Button type="submit" disabled={saveCase.isPending}>
+              {saveCase.isPending ? 'Saving...' : 'Add Case'}
+            </Button>
+          </Flex>
+        </form>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
 };
 
 export default AddCase;
