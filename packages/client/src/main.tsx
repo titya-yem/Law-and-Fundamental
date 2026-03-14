@@ -16,6 +16,7 @@ import AuthLayout from './layouts/AuthLayout';
 import ProtectedRoute from './lib/ProtectedRoute';
 import Users from './pages/Dashboard/Users';
 import Profile from './pages/Dashboard/Profile';
+import Backup from './pages/Dashboard/Backup';
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<Dashboard />} />
               <Route path="users" element={<Users />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="backup" element={<Backup />} />
             </Route>
           </Routes>
         </BrowserRouter>
