@@ -1,3 +1,4 @@
+// Pagination.tsx
 import { Button, Text } from '@radix-ui/themes';
 
 interface PaginationProps {
@@ -14,7 +15,7 @@ const Pagination = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="md:relative left-52 flex items-center gap-3 pt-4 pb-2">
+    <div className="flex w-full items-center justify-center md:justify-end gap-3 pt-4 pb-2 md:pr-6">
       <Button
         variant="soft"
         disabled={currentPage === 1}

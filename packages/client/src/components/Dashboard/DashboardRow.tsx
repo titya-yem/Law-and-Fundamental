@@ -22,7 +22,7 @@ const getStatusColor = (status: string) => {
 
 const DashboardRow = ({ item }: Props) => {
   return (
-    <div className="grid md:grid-cols-3 lg:grid-cols-7 gap-2 items-center p-2 border-b border-gray-200 text-center *:text-sm xl:gap-0">
+    <div className="grid md:grid-cols-[80px_75px_90px_90px_120px_120px_80px] lg:grid-cols-7 items-center gap-2 p-2 border-b border-gray-200 text-center text-sm">
       <Text>{item.case_number}</Text>
 
       <Text className="truncate">{item.title}</Text>

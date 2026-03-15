@@ -96,10 +96,10 @@ const Dashboard = () => {
     <Container className="px-4 lg:px-12">
       <ActionButtons setFilter={setFilter} />
 
-      <div className="h-127.5 md:h-180 flex flex-col items-center justify-between rounded-lg shadow-md p-2 bg-white">
+      <div className="md:h-130 lg:h-127.5 flex flex-col items-center justify-between rounded-lg shadow-md p-2 bg-white">
         <Box className="overflow-auto lg:overflow-hidden">
           {/* HEADER */}
-          <div className="hidden text-center p-3 lg:grid grid-cols-7 *:font-medium border-b border-gray-300">
+          <div className="hidden md:grid lg:grid grid-cols-[80px_80px_100px_100px_125px_130px_80px] lg:grid-cols-7 text-center p-3 *:font-medium border-b border-gray-300">
             <Text>Case #</Text>
             <Text>Title</Text>
             <Text>Content</Text>

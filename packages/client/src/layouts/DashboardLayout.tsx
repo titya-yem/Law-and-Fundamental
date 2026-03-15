@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Sidebar from '@/components/Dashboard/Sidebar';
-import { Outlet } from 'react-router';
+import { Link, Outlet } from 'react-router';
 import toggle from '@/assets/Toggle.svg';
 import SearchBar from '@/components/Dashboard/SearchBar';
 import logo from '@/assets/Logo.jpg';
@@ -64,11 +64,13 @@ const DashboardLayout = () => {
                 <img src={toggle} alt="toggle" className="w-7 h-7" />
               </button>
 
-              <img
-                src={logo}
-                alt="Logo"
-                className="hidden lg:flex h-12 rounded-full object-cover"
-              />
+              <Link to="/">
+                <img
+                  src={logo}
+                  alt="Logo"
+                  className="hidden lg:flex h-12 rounded-full object-cover"
+                />
+              </Link>
             </div>
           </div>
         </div>
