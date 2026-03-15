@@ -43,11 +43,7 @@ const Dashboard = () => {
     queryFn: fetchCases,
   });
 
-  /*
-  ========================
-  FILTER (STATUS / FINISHED)
-  ========================
-  */
+  /*FILTER (STATUS / FINISHED)*/
   const filteredByStatus = useMemo(() => {
     if (filter === 'all') return cases;
 
@@ -58,11 +54,7 @@ const Dashboard = () => {
     return cases.filter((c) => c.status === filter);
   }, [cases, filter]);
 
-  /*
-  ========================
-  SEARCH
-  ========================
-  */
+  /*SEARCH*/
   const filteredCases = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
 
@@ -75,20 +67,12 @@ const Dashboard = () => {
     );
   }, [filteredByStatus, searchTerm]);
 
-  /*
-  ========================
-  UPDATE CASE COUNT
-  ========================
-  */
+  /*UPDATE CASE COUNT*/
   useEffect(() => {
     setCaseCount(filteredCases.length);
   }, [filteredCases.length, setCaseCount]);
 
-  /*
-  ========================
-  PAGINATION
-  ========================
-  */
+  /*PAGINATION*/
   const totalPages = Math.max(
     1,
     Math.ceil(filteredCases.length / CASES_PER_PAGE)
@@ -112,7 +96,7 @@ const Dashboard = () => {
     <Container className="px-4 lg:px-12">
       <ActionButtons setFilter={setFilter} />
 
-      <div className="h-[510px] flex flex-col items-end justify-between rounded-lg shadow-md p-2 bg-white">
+      <div className="h-127.5 md:h-180 flex flex-col items-center justify-between rounded-lg shadow-md p-2 bg-white">
         <Box className="overflow-auto lg:overflow-hidden">
           {/* HEADER */}
           <div className="hidden text-center p-3 lg:grid grid-cols-7 *:font-medium border-b border-gray-300">
@@ -131,13 +115,11 @@ const Dashboard = () => {
           ))}
         </Box>
 
-        <div className="pr-4">
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </div>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </Container>
   );

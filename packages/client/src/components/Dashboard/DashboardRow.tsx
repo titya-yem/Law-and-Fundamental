@@ -1,4 +1,4 @@
-import { Badge, Button, Dialog, Text } from '@radix-ui/themes';
+import { Badge, Button, Dialog, Flex, Text } from '@radix-ui/themes';
 import DashboardUpdate from '@/components/Dashboard/DashboardUpdate';
 import type { Case } from '@/types/DashboardTypes';
 
@@ -35,10 +35,33 @@ const DashboardRow = ({ item }: Props) => {
           </div>
         </Dialog.Trigger>
 
-        <Dialog.Content size="2" maxWidth="400px">
-          <Text as="p" size="2">
-            {item.content}
-          </Text>
+        <Dialog.Content size="3" maxWidth="500px">
+          <Flex direction="column" gapY="1">
+            <Text weight="bold" size="4">
+              Title: {item.title}
+            </Text>
+
+            <Flex align="center" gap="4" className="border-b-2">
+              <Text size="1" weight="medium">
+                Case Number: {item.case_number}
+              </Text>
+              <Badge color={getStatusColor(item.status)}>{item.status}</Badge>
+            </Flex>
+
+            <div
+              className="text-sm md:text-base prose max-w-none py-2 prose-ol:list-decimal prose-ol:pl-5"
+              dangerouslySetInnerHTML={{ __html: item.content || '' }}
+            />
+
+            <Flex
+              align="center"
+              gap="4"
+              className="text-sm border-t-2 text-gray-500"
+            >
+              <Text>Start: {formatDate(item.start_date)}</Text>
+              <Text>Finished: {formatDate(item.finished_date)}</Text>
+            </Flex>
+          </Flex>
         </Dialog.Content>
       </Dialog.Root>
 

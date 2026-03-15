@@ -14,7 +14,7 @@ const Pagination = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex justify-end items-center gap-3 pt-4 pb-2">
+    <div className="md:relative left-52 flex items-center gap-3 pt-4 pb-2">
       <Button
         variant="soft"
         disabled={currentPage === 1}

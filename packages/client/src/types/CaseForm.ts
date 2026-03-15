@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const caseFormSchema = z.object({
-  caseNumber: z.string().min(2).max(20),
-  title: z.string().min(2).max(200),
-  content: z.string().min(2).max(800),
+  caseNumber: z.string().min(2).max(20, "Case Number should be 2-20 Characters only"),
+  title: z.string().min(2).max(200, "Case Number should be 2-200 Characters only"),
+  content: z.string().min(2).max(3000, "Case Number should be 2-3000 Characters only"),
   status: z.enum(["open", "close", "ongoing"]),
   startDate: z.string(),
   finishedDate: z.string().nullable().optional(),
