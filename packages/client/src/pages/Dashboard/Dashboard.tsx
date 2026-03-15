@@ -7,8 +7,8 @@ import { Box, Container, Text } from '@radix-ui/themes';
 import Pagination from '@/components/Dashboard/Pagination';
 import IsFetching from '@/components/IsFetching';
 import DashboardRow from '@/components/Dashboard/DashboardRow';
-import type { Case } from '@/types/DashboardTypes';
 import ActionButtons from '@/components/Dashboard/ActionButtons';
+import type { Case } from '@/types/DashboardTypes';
 
 const CASES_PER_PAGE = 8;
 
@@ -28,7 +28,11 @@ const fetchCases = async (): Promise<Case[]> => {
 
 const Dashboard = () => {
   const { searchTerm, setCaseCount } = useOutletContext<LayoutContext>();
+
   const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState<
+    'all' | 'finished' | 'open' | 'ongoing' | 'close'
+  >('all');
 
   const {
     data: cases = [],
@@ -39,28 +43,61 @@ const Dashboard = () => {
     queryFn: fetchCases,
   });
 
+  /*
+  ========================
+  FILTER (STATUS / FINISHED)
+  ========================
+  */
+  const filteredByStatus = useMemo(() => {
+    if (filter === 'all') return cases;
+
+    if (filter === 'finished') {
+      return cases.filter((c) => c.finished_date);
+    }
+
+    return cases.filter((c) => c.status === filter);
+  }, [cases, filter]);
+
+  /*
+  ========================
+  SEARCH
+  ========================
+  */
   const filteredCases = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
 
-    if (!term) return cases;
+    if (!term) return filteredByStatus;
 
-    return cases.filter(
+    return filteredByStatus.filter(
       (c) =>
         c.case_number?.toLowerCase().includes(term) ||
         c.title?.toLowerCase().includes(term)
     );
-  }, [cases, searchTerm]);
+  }, [filteredByStatus, searchTerm]);
 
+  /*
+  ========================
+  UPDATE CASE COUNT
+  ========================
+  */
   useEffect(() => {
     setCaseCount(filteredCases.length);
   }, [filteredCases.length, setCaseCount]);
 
+  /*
+  ========================
+  PAGINATION
+  ========================
+  */
   const totalPages = Math.max(
     1,
     Math.ceil(filteredCases.length / CASES_PER_PAGE)
   );
 
-  const page = searchTerm.trim() ? 1 : Math.min(currentPage, totalPages);
+  const page =
+    searchTerm.trim() || filter !== 'all'
+      ? 1
+      : Math.min(currentPage, totalPages);
 
   const paginatedCases = useMemo(() => {
     const start = (page - 1) * CASES_PER_PAGE;
@@ -73,7 +110,8 @@ const Dashboard = () => {
 
   return (
     <Container className="px-4 lg:px-12">
-      <ActionButtons />
+      <ActionButtons setFilter={setFilter} />
+
       <div className="h-[510px] flex flex-col items-end justify-between rounded-lg shadow-md p-2 bg-white">
         <Box className="overflow-auto lg:overflow-hidden">
           {/* HEADER */}
