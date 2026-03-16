@@ -7,4 +7,12 @@ export const user = z.object({
     role: z.enum(["user", "admin"]),
 });
 
+export interface Users {
+  id: number;
+  name: string;
+  email: string;
+  role: "user" | "admin";
+  create_at: string;
+}
+
 export type userType = z.infer<typeof user>;
