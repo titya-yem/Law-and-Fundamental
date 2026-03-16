@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useOutletContext } from 'react-router';
 import axios from 'axios';
 import { Box, Container, Text } from '@radix-ui/themes';
 
+import DashboardHeader from '@/components/Dashboard/DashboardHeader';
 import Pagination from '@/components/Dashboard/Pagination';
 import IsFetching from '@/components/IsFetching';
 import DashboardRow from '@/components/Dashboard/DashboardRow';
@@ -13,8 +14,8 @@ import type { Case } from '@/types/DashboardTypes';
 const CASES_PER_PAGE = 8;
 
 type LayoutContext = {
-  searchTerm: string;
-  setCaseCount: (count: number) => void;
+  sidebarOpen: boolean;
+  setSidebarOpen: (value: boolean) => void;
 };
 
 const fetchCases = async (): Promise<Case[]> => {
@@ -27,8 +28,9 @@ const fetchCases = async (): Promise<Case[]> => {
 };
 
 const Dashboard = () => {
-  const { searchTerm, setCaseCount } = useOutletContext<LayoutContext>();
+  const { sidebarOpen, setSidebarOpen } = useOutletContext<LayoutContext>();
 
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState<
     'all' | 'finished' | 'open' | 'ongoing' | 'close'
@@ -43,7 +45,7 @@ const Dashboard = () => {
     queryFn: fetchCases,
   });
 
-  /*FILTER (STATUS / FINISHED)*/
+  /* FILTER */
   const filteredByStatus = useMemo(() => {
     if (filter === 'all') return cases;
 
@@ -54,7 +56,7 @@ const Dashboard = () => {
     return cases.filter((c) => c.status === filter);
   }, [cases, filter]);
 
-  /*SEARCH*/
+  /* SEARCH */
   const filteredCases = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
 
@@ -67,16 +69,10 @@ const Dashboard = () => {
     );
   }, [filteredByStatus, searchTerm]);
 
-  /*UPDATE CASE COUNT*/
-  useEffect(() => {
-    setCaseCount(filteredCases.length);
-  }, [filteredCases.length, setCaseCount]);
+  const caseCount = filteredCases.length;
 
-  /*PAGINATION*/
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredCases.length / CASES_PER_PAGE)
-  );
+  /* PAGINATION */
+  const totalPages = Math.max(1, Math.ceil(caseCount / CASES_PER_PAGE));
 
   const page =
     searchTerm.trim() || filter !== 'all'
@@ -93,35 +89,46 @@ const Dashboard = () => {
   }
 
   return (
-    <Container className="px-4 lg:px-12">
-      <ActionButtons setFilter={setFilter} />
+    <>
+      <DashboardHeader
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        caseCount={caseCount}
+        title="Cases"
+      />
 
-      <div className="md:h-130 lg:h-127.5 flex flex-col items-center justify-between rounded-lg shadow-md p-2 bg-white">
-        <Box className="overflow-auto lg:overflow-hidden">
-          {/* HEADER */}
-          <div className="hidden md:grid lg:grid grid-cols-[80px_80px_100px_100px_125px_130px_80px] lg:grid-cols-7 text-center p-3 *:font-medium border-b border-gray-300">
-            <Text>Case #</Text>
-            <Text>Title</Text>
-            <Text>Content</Text>
-            <Text>Status</Text>
-            <Text>Start Date</Text>
-            <Text>Finished Date</Text>
-            <Text>Update</Text>
-          </div>
+      <Container className="px-4 lg:px-12">
+        <ActionButtons setFilter={setFilter} />
 
-          {/* ROWS */}
-          {paginatedCases.map((item) => (
-            <DashboardRow key={item.id} item={item} />
-          ))}
-        </Box>
+        <div className="md:h-130 lg:h-127.5 flex flex-col items-center justify-between rounded-lg shadow-md p-2 bg-white">
+          <Box className="overflow-auto lg:overflow-hidden">
+            {/* HEADER */}
+            <div className="hidden md:grid lg:grid grid-cols-[80px_80px_100px_100px_125px_130px_80px] lg:grid-cols-7 text-center p-3 *:font-medium border-b border-gray-300">
+              <Text>Case #</Text>
+              <Text>Title</Text>
+              <Text>Content</Text>
+              <Text>Status</Text>
+              <Text>Start Date</Text>
+              <Text>Finished Date</Text>
+              <Text>Update</Text>
+            </div>
 
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
-    </Container>
+            {/* ROWS */}
+            {paginatedCases.map((item) => (
+              <DashboardRow key={item.id} item={item} />
+            ))}
+          </Box>
+
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      </Container>
+    </>
   );
 };
 
