@@ -8,8 +8,3 @@ export interface Case {
   start_date: string;
   finished_date: string | null;
 }
-
-export interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
-}

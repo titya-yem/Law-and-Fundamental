@@ -4,7 +4,7 @@ import { Heading } from '@radix-ui/themes';
 interface IsFetchingProps {
   isLoading: boolean;
   isError: boolean;
-  data: Case[] | undefined;
+  data?: Case[] | undefined;
 }
 
 const IsFetching = ({ isLoading, isError, data }: IsFetchingProps) => {

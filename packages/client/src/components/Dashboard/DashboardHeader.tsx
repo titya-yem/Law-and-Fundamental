@@ -22,7 +22,11 @@ const DashboardHeader = (prop: Props) => {
       {/* Mobile */}
       <div className="flex flex-col items-center md:hidden gap-2">
         <div className="flex w-full justify-between items-center">
-          <SearchBar value={prop.searchTerm} onChange={handleSearchChange} />
+          <SearchBar
+            value={prop.searchTerm}
+            title={prop.title}
+            onChange={handleSearchChange}
+          />
 
           <button
             aria-label="Toggle sidebar"
@@ -51,7 +55,11 @@ const DashboardHeader = (prop: Props) => {
         </div>
 
         <div className="flex-1 flex justify-center px-4">
-          <SearchBar value={prop.searchTerm} onChange={handleSearchChange} />
+          <SearchBar
+            value={prop.searchTerm}
+            title={prop.title}
+            onChange={handleSearchChange}
+          />
         </div>
 
         <div className="flex-1 flex justify-end">

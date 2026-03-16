@@ -31,6 +31,16 @@ export const changeRole = async (role:string, id: number) => {
     return result.rows[0];
 };
 
+export const getUsers = async () => {
+    const result = await pool.query(
+        `SELECT * FROM users
+         ORDER BY id DESC
+        `
+    )
+
+    return result.rows;
+}
+
 // we need findUserByEmail because we must make sure user is not existed
 export const findUserByEmail = async (email: string) => {
     const reuslt = await pool.query (
