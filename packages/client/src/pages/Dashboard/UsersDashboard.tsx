@@ -9,7 +9,7 @@ import Pagination from '@/components/Dashboard/Shared/Pagination';
 import IsFetching from '@/components/IsFetching';
 import DashboardUsersRow from '@/components/Dashboard/User/DashboardUserRows';
 
-import type { Users } from '@/types/UserTypes';
+import type { UsersTypes } from '@/types/UserTypes';
 import UserFilter from '@/components/Dashboard/User/UserFilter';
 
 const USERS_PER_PAGE = 8;
@@ -19,7 +19,7 @@ type LayoutContext = {
   setSidebarOpen: (value: boolean) => void;
 };
 
-const Users = () => {
+const UsersDashboard = () => {
   const { sidebarOpen, setSidebarOpen } = useOutletContext<LayoutContext>();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,7 +33,7 @@ const Users = () => {
     isError,
   } = useQuery({
     queryKey: ['users'],
-    queryFn: async (): Promise<Users[]> => {
+    queryFn: async (): Promise<UsersTypes[]> => {
       const res = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/api/auth`,
         { withCredentials: true }
@@ -124,4 +124,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default UsersDashboard;

@@ -7,12 +7,20 @@ export const user = z.object({
     role: z.enum(["user", "admin"]),
 });
 
-export interface Users {
+export interface UsersTypes {
   id: number;
   name: string;
   email: string;
   role: "user" | "admin";
   create_at: string;
 }
+
+export const userEditSchema = z.object({
+  name: z.string().min(2, 'Name must be 2+ characters'),
+  email: z.string().email('Invalid email'),
+  role: z.enum(['user', 'admin']),
+});
+
+export type UserEditForm = z.infer<typeof userEditSchema>;
 
 export type userType = z.infer<typeof user>;

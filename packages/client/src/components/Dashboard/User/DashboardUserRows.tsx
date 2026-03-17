@@ -1,9 +1,9 @@
 import { Badge, Text } from '@radix-ui/themes';
-import type { Users } from '@/types/UserTypes';
+import type { UsersTypes } from '@/types/UserTypes';
 import UserEdit from './UserEdit';
 
 type Props = {
-  item: Users;
+  item: UsersTypes;
 };
 
 const formatDate = (date?: string | null) =>
@@ -28,7 +28,7 @@ const DashboardUsersRow = ({ item }: Props) => {
       <Text>{formatDate(item.create_at)}</Text>
 
       <div>
-        <UserEdit />
+        <UserEdit user={item} />
       </div>
     </div>
   );

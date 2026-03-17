@@ -18,15 +18,6 @@ type LayoutContext = {
   setSidebarOpen: (value: boolean) => void;
 };
 
-const fetchCases = async (): Promise<Case[]> => {
-  const res = await axios.get(
-    `${import.meta.env.VITE_SERVER_URL}/api/case/getAll`,
-    { withCredentials: true }
-  );
-
-  return Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
-};
-
 const Dashboard = () => {
   const { sidebarOpen, setSidebarOpen } = useOutletContext<LayoutContext>();
 
@@ -42,7 +33,13 @@ const Dashboard = () => {
     isError,
   } = useQuery({
     queryKey: ['cases'],
-    queryFn: fetchCases,
+    queryFn: async (): Promise<Case[]> => {
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/case/getAll`,
+        { withCredentials: true }
+      );
+      return res.data;
+    },
   });
 
   /* FILTER */

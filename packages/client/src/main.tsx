@@ -14,7 +14,7 @@ import MainLayout from './layouts/MainLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import AuthLayout from './layouts/AuthLayout';
 import ProtectedRoute from './lib/ProtectedRoute';
-import Users from './pages/Dashboard/Users';
+import UsersDashboard from './pages/Dashboard/UsersDashboard';
 import Profile from './pages/Dashboard/Profile';
 import Backup from './pages/Dashboard/Backup';
 
@@ -45,7 +45,7 @@ createRoot(document.getElementById('root')!).render(
               }
             >
               <Route index element={<Dashboard />} />
-              <Route path="users" element={<Users />} />
+              <Route path="users" element={<UsersDashboard />} />
               <Route path="profile" element={<Profile />} />
               <Route path="backup" element={<Backup />} />
             </Route>
