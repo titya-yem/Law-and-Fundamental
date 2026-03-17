@@ -42,8 +42,6 @@ const Users = () => {
     },
   });
 
-  console.log(users);
-
   /* FILTER BY ROLE */
   const filteredUsers = useMemo(() => {
     if (filter === 'all') return users;
@@ -52,14 +50,16 @@ const Users = () => {
 
   /* SEARCH */
   const searchedUsers = useMemo(() => {
-    const term = searchTerm.toLowerCase().trim();
+    const term = searchTerm.trim().toLowerCase();
+
     if (!term) return filteredUsers;
 
-    return filteredUsers.filter(
-      (u) =>
-        u.name.toLowerCase().includes(term) ||
-        u.email.toLowerCase().includes(term)
-    );
+    return filteredUsers.filter((u) => {
+      const name = (u.name ?? '').toString().trim().toLowerCase();
+      const email = (u.email ?? '').toString().trim().toLowerCase();
+
+      return name.includes(term) || email.includes(term);
+    });
   }, [filteredUsers, searchTerm]);
 
   const userCount = searchedUsers.length;
@@ -88,6 +88,7 @@ const Users = () => {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         caseCount={userCount}
+        placeholder="Search by Name or Email"
         title="Users"
       />
 

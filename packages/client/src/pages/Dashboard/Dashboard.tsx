@@ -96,6 +96,7 @@ const Dashboard = () => {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         caseCount={caseCount}
+        placeholder="Search by case number or title"
         title="Cases"
       />
 

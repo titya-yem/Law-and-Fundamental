@@ -9,6 +9,7 @@ type Props = {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   caseCount: number;
+  placeholder: string;
   title: string;
 };
 
@@ -24,7 +25,7 @@ const DashboardHeader = (prop: Props) => {
         <div className="flex w-full justify-between items-center">
           <SearchBar
             value={prop.searchTerm}
-            title={prop.title}
+            placeholder={prop.placeholder}
             onChange={handleSearchChange}
           />
 
@@ -57,7 +58,7 @@ const DashboardHeader = (prop: Props) => {
         <div className="flex-1 flex justify-center px-4">
           <SearchBar
             value={prop.searchTerm}
-            title={prop.title}
+            placeholder={prop.placeholder}
             onChange={handleSearchChange}
           />
         </div>

@@ -1,17 +1,17 @@
 import { Box } from '@radix-ui/themes';
 
 export interface SearchBarProps {
-  title: string;
+  placeholder: string;
   value: string;
   onChange: (value: string) => void;
 }
 
-const SearchBar = ({ value, title, onChange }: SearchBarProps) => {
+const SearchBar = ({ value, placeholder, onChange }: SearchBarProps) => {
   return (
     <div className={'relative'}>
       <input
         type="text"
-        placeholder={`Search by ${title} number or Title`}
+        placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-74 md:w-82 lg:w-96 px-4 py-3 pr-10 *:text-sm border rounded-full outline-none shadow-sm bg-white focus:ring-2 focus:ring-blue-500"

@@ -9,12 +9,8 @@ const formatDate = (date?: string | null) =>
   date ? new Date(date).toLocaleDateString() : '-';
 
 const getRoleColor = (role: string) => {
-  switch (role) {
-    case 'admin':
-      return 'crimson';
-    default:
-      return 'blue';
-  }
+  if (role === 'admin') return 'crimson';
+  else return 'blue';
 };
 
 const DashboardUsersRow = ({ item }: Props) => {
