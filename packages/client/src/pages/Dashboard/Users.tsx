@@ -4,13 +4,13 @@ import { useOutletContext } from 'react-router';
 import axios from 'axios';
 import { Box, Container, Text } from '@radix-ui/themes';
 
-import DashboardHeader from '@/components/Dashboard/DashboardHeader';
-import Pagination from '@/components/Dashboard/Pagination';
+import DashboardHeader from '@/components/Dashboard/Shared/DashboardHeader';
+import Pagination from '@/components/Dashboard/Shared/Pagination';
 import IsFetching from '@/components/IsFetching';
-import DashboardUsersRow from '@/components/Dashboard/DashboardUserRows';
+import DashboardUsersRow from '@/components/Dashboard/User/DashboardUserRows';
 
 import type { Users } from '@/types/UserTypes';
-import UsersButton from '@/components/Dashboard/UsersButton';
+import UserFilter from '@/components/Dashboard/User/UserFilter';
 
 const USERS_PER_PAGE = 8;
 
@@ -93,18 +93,18 @@ const Users = () => {
       />
 
       <Container className="px-4 lg:px-12">
-        <UsersButton setFilter={setFilter} />
+        <UserFilter setFilter={setFilter} />
 
         <div className="md:h-130 lg:h-127.5 flex flex-col justify-between rounded-lg shadow-md p-2 bg-white">
           <Box className="overflow-auto lg:overflow-hidden">
             {/* TABLE HEADER */}
-            <div className="hidden md:grid grid-cols-[80px_1fr_2fr_100px_100px_150px] lg:grid-cols-[120px_1fr_1fr_135px_220px_150px] text-center p-3 *:font-medium border-b border-gray-300">
+            <div className="hidden md:grid grid-cols-[75px_1fr_2fr_105px_100px_150px] lg:grid-cols-[120px_1fr_1fr_135px_220px_150px] text-center p-3 *:font-medium border-b border-gray-300">
               <Text>ID</Text>
               <Text>Name</Text>
               <Text>Email</Text>
               <Text>Role</Text>
               <Text>Created</Text>
-              <Text>Edit</Text>
+              <Text>Update</Text>
             </div>
 
             {/* ROWS */}

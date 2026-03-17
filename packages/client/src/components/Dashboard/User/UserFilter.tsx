@@ -6,7 +6,7 @@ type Props = {
   setFilter: (value: UserFilter) => void;
 };
 
-const UsersButton = ({ setFilter }: Props) => {
+const UserFilter = ({ setFilter }: Props) => {
   return (
     <section className="flex gap-2 mb-4">
       <Button onClick={() => setFilter('all')}>All Users</Button>
@@ -18,4 +18,4 @@ const UsersButton = ({ setFilter }: Props) => {
   );
 };
 
-export default UsersButton;
+export default UserFilter;

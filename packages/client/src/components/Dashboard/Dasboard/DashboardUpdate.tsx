@@ -14,8 +14,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-import RichTextEditor from '@/components/Dashboard/RichTextEditor';
-import DeleteCaseButton from '@/components/Dashboard/DeleteCaseButton';
+import RichTextEditor from '@/components/Dashboard/Dasboard/RichTextEditor';
+import DeleteCaseButton from '@/components/Dashboard/Dasboard/DeleteCaseButton';
 
 import {
   caseFormSchema,

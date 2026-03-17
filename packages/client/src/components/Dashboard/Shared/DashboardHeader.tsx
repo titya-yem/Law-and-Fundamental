@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import toggle from '@/assets/Toggle.svg';
-import SearchBar from '@/components/Dashboard/SearchBar';
+import SearchBar from '@/components/Dashboard/Shared/SearchBar';
 import logo from '@/assets/Logo.jpg';
 
 type Props = {

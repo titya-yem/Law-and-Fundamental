@@ -1,7 +1,7 @@
 import type { userType } from '@/types/UserTypes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import Fetch from '../Fetch';
+import Fetch from '../../Fetch';
 import { Box, Text } from '@radix-ui/themes';
 import logo from '@/assets/Logo.jpg';
 import { sidebarLists } from '@/constants/SidebarLists';

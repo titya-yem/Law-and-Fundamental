@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-import RichTextEditor from '@/components/Dashboard/RichTextEditor';
+import RichTextEditor from '@/components/Dashboard/Dasboard/RichTextEditor';
 import { caseFormSchema, type CaseFormValues } from '@/types/CaseForm';
 import toast from 'react-hot-toast';
 

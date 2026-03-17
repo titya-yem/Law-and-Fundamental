@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Sidebar from '@/components/Dashboard/Sidebar';
+import Sidebar from '@/components/Dashboard/Shared/Sidebar';
 import { Outlet } from 'react-router';
 
 const DashboardLayout = () => {

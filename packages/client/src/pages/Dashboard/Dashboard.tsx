@@ -4,11 +4,11 @@ import { useOutletContext } from 'react-router';
 import axios from 'axios';
 import { Box, Container, Text } from '@radix-ui/themes';
 
-import DashboardHeader from '@/components/Dashboard/DashboardHeader';
-import Pagination from '@/components/Dashboard/Pagination';
+import DashboardHeader from '@/components/Dashboard/Shared/DashboardHeader';
+import Pagination from '@/components/Dashboard/Shared/Pagination';
 import IsFetching from '@/components/IsFetching';
-import DashboardRow from '@/components/Dashboard/DashboardRow';
-import ActionButtons from '@/components/Dashboard/ActionButtons';
+import DashboardRow from '@/components/Dashboard/Dasboard/DashboardRow';
+import ActionButtons from '@/components/Dashboard/Dasboard/ActionButtons';
 import type { Case } from '@/types/DashboardTypes';
 
 const CASES_PER_PAGE = 8;

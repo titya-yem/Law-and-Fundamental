@@ -1,5 +1,5 @@
 import { Badge, Button, Dialog, Flex, Text } from '@radix-ui/themes';
-import DashboardUpdate from '@/components/Dashboard/DashboardUpdate';
+import DashboardUpdate from '@/components/Dashboard/Dasboard/DashboardUpdate';
 import type { Case } from '@/types/DashboardTypes';
 
 type Props = {
