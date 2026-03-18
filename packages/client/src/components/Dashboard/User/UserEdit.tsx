@@ -1,130 +1,190 @@
-import { z } from 'zod';
-import { type UsersTypes, userEditSchema } from '@/types/UserTypes';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Dialog, Flex, Text, TextField } from '@radix-ui/themes';
 import {
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
+  type UserEditForm,
+  type UsersTypes,
+  userEditSchema,
+} from '@/types/UserTypes';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Button,
+  Dialog,
+  Flex,
+  Text,
+  TextField,
   Select,
-  SelectItem,
-} from '@radix-ui/react-select';
+  AlertDialog,
+} from '@radix-ui/themes';
+import axios from 'axios';
 import { useForm, Controller } from 'react-hook-form';
-
-type UserEditForm = z.infer<typeof userEditSchema>;
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 
 type Props = {
   user: UsersTypes;
-  onSave?: (data: UsersTypes) => void;
 };
 
-const UserEdit = ({ user: initialUser, onSave }: Props) => {
-  const form = useForm<UserEditForm>({
+const UserEdit = ({ user }: Props) => {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+
+  const { control, register, handleSubmit, formState } = useForm<UserEditForm>({
     resolver: zodResolver(userEditSchema),
     defaultValues: {
-      name: initialUser.name,
-      email: initialUser.email,
-      role: initialUser.role,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: UserEditForm) => {
+      const res = await axios.put(
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/${user.id}`,
+        data,
+        { withCredentials: true }
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setOpen(false);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/delete/${user.id}`,
+        { withCredentials: true }
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setOpen(false);
     },
   });
 
   const handleSave = (data: UserEditForm) => {
-    if (onSave) onSave({ ...initialUser, ...data });
-    console.log('Saved user:', { ...initialUser, ...data });
+    updateMutation.mutate(data);
+  };
+
+  const handleDelete = () => {
+    deleteMutation.mutate();
   };
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger>
         <Button>Edit</Button>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="450px">
         <Dialog.Title>Edit profile</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
+        <Dialog.Description mb="4">
           Make changes to your profile.
         </Dialog.Description>
 
         <form
-          onSubmit={form.handleSubmit(handleSave)}
+          onSubmit={handleSubmit(handleSave)}
           className="grid grid-cols-2 gap-3"
         >
-          {/* Email spans full row */}
+          {/* Email */}
           <div className="col-span-2">
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Email
+            <Text size="2" weight="bold">
+              Email
+            </Text>
+            <TextField.Root {...register('email')} />
+            {formState.errors.email && (
+              <Text color="red" size="1">
+                {formState.errors.email.message}
               </Text>
-              <TextField.Root
-                {...form.register('email')}
-                placeholder="Enter your email"
-              />
-              {form.formState.errors.email && (
-                <Text color="red" size="1">
-                  {form.formState.errors.email.message}
-                </Text>
-              )}
-            </label>
+            )}
           </div>
 
-          {/* Name field */}
+          {/* Name */}
           <div>
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Name
+            <Text size="2" weight="bold">
+              Name
+            </Text>
+            <TextField.Root {...register('name')} />
+            {formState.errors.name && (
+              <Text color="red" size="1">
+                {formState.errors.name.message}
               </Text>
-              <TextField.Root
-                {...form.register('name')}
-                placeholder="Enter your full name"
-              />
-              {form.formState.errors.name && (
-                <Text color="red" size="1">
-                  {form.formState.errors.name.message}
-                </Text>
-              )}
-            </label>
+            )}
           </div>
 
-          {/* Role field */}
-          <div>
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Role
-              </Text>
-              <div className="border border-gray-300 rounded px-2 py-1">
-                <Controller
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
+          {/* Role */}
+          <div className="flex flex-col justify-center">
+            <Text size="2" weight="bold">
+              Role
+            </Text>
 
-                      <SelectContent>
-                        <SelectItem value="user">User</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-              {form.formState.errors.role && (
-                <Text color="red" size="1">
-                  {form.formState.errors.role.message}
-                </Text>
+            <Controller
+              control={control}
+              name="role"
+              render={({ field }) => (
+                <Select.Root value={field.value} onValueChange={field.onChange}>
+                  <Select.Trigger placeholder="Select role" />
+                  <Select.Content>
+                    <Select.Item value="user">User</Select.Item>
+                    <Select.Item value="admin">Admin</Select.Item>
+                  </Select.Content>
+                </Select.Root>
               )}
-            </label>
+            />
+
+            {formState.errors.role && (
+              <Text color="red" size="1">
+                {formState.errors.role.message}
+              </Text>
+            )}
           </div>
 
-          {/* Buttons: span both columns */}
-          <Flex gap="3" mt="4" justify="end" className="col-span-2">
-            <Dialog.Close>
-              <Button variant="soft" color="gray">
-                Cancel
+          {/* Buttons */}
+          <Flex className="col-span-2 mt-4" justify="between">
+            {/* Delete */}
+            <AlertDialog.Root>
+              <AlertDialog.Trigger>
+                <Button color="red">Delete</Button>
+              </AlertDialog.Trigger>
+
+              <AlertDialog.Content maxWidth="450px">
+                <AlertDialog.Title>Delete User</AlertDialog.Title>
+                <AlertDialog.Description size="2">
+                  Are you sure? This action cannot be undone.
+                </AlertDialog.Description>
+
+                <Flex gap="3" mt="4" justify="end">
+                  <AlertDialog.Cancel>
+                    <Button variant="soft" color="gray">
+                      Cancel
+                    </Button>
+                  </AlertDialog.Cancel>
+
+                  <AlertDialog.Action>
+                    <Button
+                      color="red"
+                      onClick={handleDelete}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+                    </Button>
+                  </AlertDialog.Action>
+                </Flex>
+              </AlertDialog.Content>
+            </AlertDialog.Root>
+
+            {/* Right */}
+            <Flex gap="3">
+              <Dialog.Close>
+                <Button variant="soft">Cancel</Button>
+              </Dialog.Close>
+
+              <Button type="submit" disabled={updateMutation.isPending}>
+                {updateMutation.isPending ? 'Saving...' : 'Save'}
               </Button>
-            </Dialog.Close>
-            <Button type="submit">Save</Button>
+            </Flex>
           </Flex>
         </form>
       </Dialog.Content>

@@ -20,15 +20,16 @@ export const createUser = async ( name: string, email: string, hashedPassword: s
     return reuslt.rows[0];
 };
 
-export const changeRole = async (role:string, id: number) => {
-    const result = await pool.query (
-        `UPDATE users SET role = $1 WHERE id = $2
-         RETURNING id, name, role
-        `,
-        [role, id]
-    );
+export const updateUser = async ( id: number, name: string, email: string, role: string) => {
+  const result = await pool.query(
+    `UPDATE users SET name = $1, email = $2, role = $3
+     WHERE id = $4
+     RETURNING id, name, email, role
+    `,
+    [name, email, role, id]
+  );
 
-    return result.rows[0];
+  return result.rows[0];
 };
 
 export const getUsers = async () => {
