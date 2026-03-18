@@ -2,7 +2,7 @@ import type { RequestHandler } from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { registerSchema, loginSchema, updateUserSchema } from "../validations/user.validation"
-import {  createUser, findUserByEmail, getUsers, updateUser } from "../models/user.model"
+import {  createUser, deleteUser, findUserByEmail, getUsers, updateUser } from "../models/user.model"
 
 const JWT_SERECT = process.env.JWT_SECRET as string;
 
@@ -85,6 +85,18 @@ export const updateUserHandler: RequestHandler = async (req, res) => {
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
+};
+
+export const deleteUserHandler: RequestHandler = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const deletedUser = await deleteUser(Number(id));
+
+        res.status(200).json({ message: "User Deleted", user: deletedUser});
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
 export const getAll: RequestHandler = async (req, res) => {

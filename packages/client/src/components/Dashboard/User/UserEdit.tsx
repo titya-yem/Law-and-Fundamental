@@ -53,7 +53,7 @@ const UserEdit = ({ user }: Props) => {
   const deleteMutation = useMutation({
     mutationFn: async () => {
       const res = await axios.delete(
-        `${import.meta.env.VITE_SERVER_URL}/api/auth/delete/${user.id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/${user.id}`,
         { withCredentials: true }
       );
       return res.data;
@@ -64,6 +64,7 @@ const UserEdit = ({ user }: Props) => {
     },
   });
 
+  // ✅ HANDLERS
   const handleSave = (data: UserEditForm) => {
     updateMutation.mutate(data);
   };

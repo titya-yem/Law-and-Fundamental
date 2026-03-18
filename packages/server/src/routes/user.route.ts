@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, login, updateUserHandler, logout, getAll } from "../controllers/user.controller";
+import { register, login, updateUserHandler, logout, getAll, deleteUserHandler } from "../controllers/user.controller";
 import { authenticate, authorizeAdmin } from "../middlewares/auth.middleware";
 
 const router = Router();
@@ -10,6 +10,7 @@ router.get("/me", authenticate, (req, res) => {
 router.get("/",  authenticate, authorizeAdmin, getAll);
 
 router.put("/:id", authenticate, authorizeAdmin, updateUserHandler);
+router.delete("/:id", authenticate, authorizeAdmin, deleteUserHandler);
 router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);

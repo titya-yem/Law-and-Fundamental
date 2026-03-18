@@ -42,6 +42,17 @@ export const getUsers = async () => {
     return result.rows;
 }
 
+export const deleteUser = async (id: number) => {
+    const result = await pool.query (
+        `DELETE FROM users
+         WHERE id = $1
+         RETURNING *`,
+        [id]
+    )
+
+    return result.rows[0];
+}
+
 // we need findUserByEmail because we must make sure user is not existed
 export const findUserByEmail = async (email: string) => {
     const reuslt = await pool.query (
