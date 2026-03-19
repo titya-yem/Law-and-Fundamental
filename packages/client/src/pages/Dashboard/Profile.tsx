@@ -1,16 +1,30 @@
 import IsFetching from '@/components/IsFetching';
-import type { userType } from '@/types/UserTypes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Link } from 'react-router';
+import { Link, useOutletContext } from 'react-router';
 
 import logo from '@/assets/Logo.jpg';
 import toggle from '@/assets/Toggle.svg';
+import { Text } from '@radix-ui/themes';
+import ProfileCard, {
+  type ProfileCardProps,
+} from '@/components/Dashboard/Profile/ProfileCard';
+
+type LayoutContext = {
+  sidebarOpen: boolean;
+  setSidebarOpen: (value: boolean) => void;
+};
 
 const Profile = () => {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['users'],
-    queryFn: async (): Promise<userType> => {
+  const { sidebarOpen, setSidebarOpen } = useOutletContext<LayoutContext>();
+
+  const {
+    data: user,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async (): Promise<ProfileCardProps> => {
       const res = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/api/auth/me`,
         { withCredentials: true }
@@ -19,7 +33,9 @@ const Profile = () => {
     },
   });
 
-  <IsFetching isLoading={isLoading} isError={isError} />;
+  if (isLoading || isError || !user) {
+    return <IsFetching isLoading={isLoading} isError={isError} />;
+  }
 
   return (
     <div className="px-4 py-4">
@@ -28,17 +44,31 @@ const Profile = () => {
           <img
             src={logo}
             alt="Law and Fundamental Local Meditiation Office Logo"
-            className="w-12"
+            className="w-12 rounded-full"
           />
         </Link>
-        <img src={toggle} alt="toggle button" className="w-6" />
+
+        <button
+          aria-label="Toggle sidebar"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="lg:hidden"
+        >
+          <img src={toggle} alt="toggle button" className="w-6" />
+        </button>
       </div>
 
-      <div className="py-4">
+      <div className="py-4 *:text-center lg:*:text-left">
         <h2 className="text-2xl font-semibold text-gray-900">Profile</h2>
-        <p className="text-sm text-purple-600 font-medium">
-          Welcome {data?.userName}
+        <p className="font-medium text-purple-600">
+          Welcome{' '}
+          <Text as="span" className="underline underline-offset-2">
+            {user.name}
+          </Text>
         </p>
+      </div>
+
+      <div>
+        <ProfileCard {...user} />
       </div>
     </div>
   );

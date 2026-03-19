@@ -2,7 +2,7 @@ import type { RequestHandler } from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { registerSchema, loginSchema, updateUserSchema } from "../validations/user.validation"
-import {  createUser, deleteUser, findUserByEmail, getUsers, updateUser } from "../models/user.model"
+import {  createUser, deleteUser, findUserByEmail, getUsers, updateUser, getUserById } from "../models/user.model"
 
 const JWT_SERECT = process.env.JWT_SECRET as string;
 
@@ -49,9 +49,12 @@ export const login: RequestHandler = async (req, res) => {
 
         // using jwt to sign with id and role, JWT_SECRET, and expire in 4h
         const token = jwt.sign(
-            { role: user.role, userName: user.name, email: user.email},
-            JWT_SERECT,
-            { expiresIn: "2h"}
+            {
+                id: user.id, 
+                role: user.role,
+                userName: user.name,
+                email: user.email
+            }, JWT_SERECT, { expiresIn: "2h"}
         )
 
         // store token in httpOnly cookie
@@ -104,6 +107,21 @@ export const getAll: RequestHandler = async (req, res) => {
         const users = await getUsers();
 
         res.status(200).json(users)
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+export const getCurrentUser: RequestHandler = async (req, res) => {
+    const userId = req.user?.id;
+
+    if (!userId) 
+        return res.status(400).json({ message: "User ID missing in token" });
+
+    try {
+        const currentUser = await getUserById(Number(userId));
+
+        res.status(200).json(currentUser)
     } catch (error: any) {
         res.status(400).json({ message: error.message });
     }

@@ -11,12 +11,14 @@ export const useAuth = () => {
     queryKey: ["auth"],
     queryFn: async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/auth/me`, {
-          withCredentials: true,
-        });
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/auth/me`, 
+          { withCredentials: true});
+
         return res.data;
-      } catch {
-        return null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        console.error("AUTH ERROR:", error.response?.data);
+        throw error;
       }
     },
   });
