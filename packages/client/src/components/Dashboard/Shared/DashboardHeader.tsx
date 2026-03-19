@@ -8,7 +8,7 @@ type Props = {
   setSidebarOpen: (value: boolean) => void;
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-  caseCount: number;
+  caseCount?: number;
   placeholder: string;
   title: string;
 };
