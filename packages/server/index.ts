@@ -4,8 +4,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser"
 import helmet from "helmet";
 import morgan from "morgan"
+
 import userRouter from "./src/routes/user.route"
 import caseRouter from "./src/routes/case.route"
+import BackUpRouter from "./src/routes/backup.route"
 
 const app = express();
 dotenv.config(); // anable to use env file
@@ -22,6 +24,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", userRouter);
 app.use("/api/case", caseRouter);
+app.use("/api/backup", BackUpRouter);
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {

@@ -1,7 +1,76 @@
-import React from 'react';
+import IsFetching from '@/components/IsFetching';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { Link, useOutletContext } from 'react-router';
 
-const Backup = () => {
-  return <div>Backup</div>;
+import logo from '@/assets/Logo.jpg';
+import toggle from '@/assets/Toggle.svg';
+import { Text } from '@radix-ui/themes';
+import { type ProfileCardProps } from '@/components/Dashboard/Profile/ProfileCard';
+import BackUpBoard from '@/components/Dashboard/Dasboard/BackUp/BackUpBoard';
+
+type LayoutContext = {
+  sidebarOpen: boolean;
+  setSidebarOpen: (value: boolean) => void;
 };
 
-export default Backup;
+const BackUp = () => {
+  const { sidebarOpen, setSidebarOpen } = useOutletContext<LayoutContext>();
+
+  const {
+    data: user,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async (): Promise<ProfileCardProps> => {
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/me`,
+        { withCredentials: true }
+      );
+      return res.data;
+    },
+  });
+
+  if (isLoading || isError || !user) {
+    return <IsFetching isLoading={isLoading} isError={isError} />;
+  }
+
+  return (
+    <div className="px-4 py-4">
+      <div className="flex justify-between items-center">
+        <Link to="/">
+          <img
+            src={logo}
+            alt="Law and Fundamental Local Meditiation Office Logo"
+            className="w-12 rounded-full"
+          />
+        </Link>
+
+        <button
+          aria-label="Toggle sidebar"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="lg:hidden"
+        >
+          <img src={toggle} alt="toggle button" className="w-6" />
+        </button>
+      </div>
+
+      <div className="py-4 *:text-center lg:*:text-left">
+        <h2 className="text-2xl font-semibold text-gray-900">Back Up</h2>
+        <p className="font-medium text-purple-600">
+          Welcome{' '}
+          <Text as="span" className="underline underline-offset-2">
+            {user.name}
+          </Text>
+        </p>
+      </div>
+
+      <div>
+        <BackUpBoard />
+      </div>
+    </div>
+  );
+};
+
+export default BackUp;
