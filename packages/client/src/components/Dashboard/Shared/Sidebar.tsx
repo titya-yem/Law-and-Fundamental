@@ -25,7 +25,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
       return res.data;
     },
 
-    staleTime: Infinity,
+    staleTime: 1 * 60 * 1000, // 1 min
     refetchOnWindowFocus: false,
   });
 
