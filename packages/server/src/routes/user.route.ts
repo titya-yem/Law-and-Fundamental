@@ -4,9 +4,6 @@ import { authenticate, authorizeAdmin } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-// router.get("/me", authenticate, (req, res) => {
-//     res.json(req.user);
-// });
 router.get("/me",  authenticate, getCurrentUser);
 
 router.get("/",  authenticate, authorizeAdmin, getAll);
