@@ -1,22 +1,17 @@
-// db.ts
 import { Pool } from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
+
 declare global {
   var pgPool: Pool | undefined;
 }
 
-let pool: Pool;
+const pool: Pool = globalThis.pgPool ?? new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
-if (!globalThis.pgPool) {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-  });
-  globalThis.pgPool = pool;
-} else {
-  pool = globalThis.pgPool;
-}
+globalThis.pgPool = pool;
 
 export default pool;
