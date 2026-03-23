@@ -1,23 +1,28 @@
 import type { RequestHandler } from "express";
-import fs from "node:fs";
-import { backUpSchema } from "../validations/backup.validation";
-import { createBackup } from "../services/backup.service";
+import pool from "../config/db";
 
 export const downloadBackUp: RequestHandler = async (req, res) => {
   try {
-    const { format } = backUpSchema.parse(req.query);
+    // fetch all data
+    const users = await pool.query("SELECT * FROM users");
+    const cases = await pool.query("SELECT * FROM cases");
 
-    const { filePath, fileName } = await createBackup(format);
+    const backup = {
+      users: users.rows,
+      cases: cases.rows,
+      createdAt: new Date().toISOString(),
+    };
 
-    res.download(filePath, fileName, (error) => {
-      if (error) console.error("Download error:", error);
+    // force download
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=backup.json"
+    );
+    res.setHeader("Content-Type", "application/json");
 
-      fs.unlink(filePath, (err) => {
-        if (err) console.error("Cleanup error:", err);
-      });
-    });
+    res.send(JSON.stringify(backup, null, 2));
   } catch (error) {
-    console.error("Backup error:", error);
-    if (!res.headersSent) res.status(500).json({ message: "Backup failed" });
+    console.error("❌ Backup error:", error);
+    res.status(500).json({ message: "Backup failed" });
   }
 };

@@ -1,5 +1,4 @@
 import express from "express";
-import ServerlessHttp from "serverless-http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -26,10 +25,11 @@ app.use("/api/auth", userRouter);
 app.use("/api/case", caseRouter);
 app.use("/api/backup", BackUpRouter);
 
-// root health check
 app.get("/", (req, res) => {
   res.json({ message: "Backend is running ✅" });
 });
 
-// export as serverless function
-export default ServerlessHttp(app);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

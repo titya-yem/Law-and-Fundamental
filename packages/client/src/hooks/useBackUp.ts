@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
-export const downloadBackUp = async (format: "sql" | "dump") => {
+export const downloadBackUp = async () => {
   const res = await axios.get(
-    `${import.meta.env.VITE_SERVER_URL}/api/backup?format=${format}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/backup`,
     {
       withCredentials: true,
       responseType: "blob",
@@ -15,14 +15,19 @@ export const downloadBackUp = async (format: "sql" | "dump") => {
 
 export const useBackup = () => {
   return useMutation({
-    mutationFn: (format: "sql" | "dump") => downloadBackUp(format),
+    mutationFn: downloadBackUp,
 
-    onSuccess: (blob, format) => {
+    onSuccess: (blob) => {
       const url = globalThis.URL.createObjectURL(blob);
       const a = document.createElement("a");
+
       a.href = url;
-      a.download = `backup.${format}`;
+      a.download = "backup.json";
+
+      document.body.appendChild(a);
       a.click();
+      a.remove();
+
       globalThis.URL.revokeObjectURL(url);
     },
 
