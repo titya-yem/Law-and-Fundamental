@@ -4,13 +4,14 @@ import cors from "cors";
 import cookieParser from "cookie-parser"
 import helmet from "helmet";
 import morgan from "morgan"
+import type { Request, Response } from "express";
 
 import userRouter from "./src/routes/user.route"
 import caseRouter from "./src/routes/case.route"
 import BackUpRouter from "./src/routes/backup.route"
 
 const app = express();
-dotenv.config(); 
+dotenv.config();
 
 // middleware
 app.use(cors({
@@ -26,7 +27,6 @@ app.use("/api/auth", userRouter);
 app.use("/api/case", caseRouter);
 app.use("/api/backup", BackUpRouter);
 
-const port = process.env.PORT || 8000;
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+export default function handler(req: Request, res:Response) {
+  app(req, res);
+}
