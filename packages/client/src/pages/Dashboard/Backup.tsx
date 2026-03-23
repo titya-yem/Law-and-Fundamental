@@ -1,13 +1,12 @@
 import IsFetching from '@/components/IsFetching';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { Link, useOutletContext } from 'react-router';
 
 import logo from '@/assets/Logo.jpg';
 import toggle from '@/assets/Toggle.svg';
 import { Text } from '@radix-ui/themes';
-import { type ProfileCardProps } from '@/components/Dashboard/Profile/ProfileCard';
+
 import BackUpBoard from '@/components/Dashboard/Dasboard/BackUp/BackUpBoard';
+import { useAuth } from '@/hooks/useAuth';
 
 type LayoutContext = {
   sidebarOpen: boolean;
@@ -17,20 +16,7 @@ type LayoutContext = {
 const BackUp = () => {
   const { sidebarOpen, setSidebarOpen } = useOutletContext<LayoutContext>();
 
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: async (): Promise<ProfileCardProps> => {
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/api/auth/me`,
-        { withCredentials: true }
-      );
-      return res.data;
-    },
-  });
+  const { data: user, isLoading, isError } = useAuth();
 
   if (isLoading || isError || !user) {
     return <IsFetching isLoading={isLoading} isError={isError} />;

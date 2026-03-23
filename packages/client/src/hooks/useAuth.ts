@@ -7,19 +7,16 @@ export interface User {
 }
 
 export const useAuth = () => {
-  return useQuery<User | null>({
-    queryKey: ["auth"],
+  return useQuery({
+    queryKey: ['auth'],
     queryFn: async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/auth/me`, 
-          { withCredentials: true});
-
-        return res.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        console.error("AUTH ERROR:", error.response?.data);
-        throw error;
-      }
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/me`,
+        { withCredentials: true }
+      );
+      return res.data;
     },
+    retry: false,
+    staleTime: 5 * 60 * 1000,
   });
 };
