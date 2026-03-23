@@ -10,14 +10,14 @@ import caseRouter from "./src/routes/case.route"
 import BackUpRouter from "./src/routes/backup.route"
 
 const app = express();
-dotenv.config(); // anable to use env file
+dotenv.config(); 
 
 // middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || "http://localhost:5173",
   credentials: true,
 }))
-app.use(express.json());  // anable to read from body
+app.use(express.json()); 
 app.use(helmet()); 
 app.use(morgan("dev"));
 app.use(cookieParser());
