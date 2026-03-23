@@ -27,4 +27,9 @@ app.use("/api/auth", userRouter);
 app.use("/api/case", caseRouter);
 app.use("/api/backup", BackUpRouter);
 
+app.get("/", (req, res) => {
+  res.json({ message: "E-Commerce Backend is running ✅" });
+});
+
+
 export default ServerlessHttp(app);
