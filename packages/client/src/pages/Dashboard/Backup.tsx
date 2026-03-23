@@ -57,7 +57,7 @@ const BackUp = () => {
       </div>
 
       <div className="py-4 *:text-center lg:*:text-left">
-        <h2 className="text-2xl font-semibold text-gray-900">Back Up</h2>
+        <h2 className="text-2xl font-semibold text-gray-900">Data Back Up</h2>
         <p className="font-medium text-purple-600">
           Welcome{' '}
           <Text as="span" className="underline underline-offset-2">

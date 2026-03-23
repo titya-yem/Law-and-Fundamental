@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useBackup } from '@/hooks/useBackUp';
+import { Box, Button, Card, Select } from '@radix-ui/themes';
 
 const BackUpBoard = () => {
   const [format, setFormat] = useState<'sql' | 'dump'>('sql');
@@ -11,28 +12,34 @@ const BackUpBoard = () => {
   };
 
   return (
-    <div className="p-6 max-w-lg">
-      <h1 className="text-2xl font-bold mb-4">Database Backup</h1>
+    <Box className="mx-auto lg:mx-0 shadow-md max-w-60">
+      <Card>
+        <div className="flex flex-col items-center lg:items-start gap-y-4 p-6">
+          <Select.Root
+            value={format}
+            onValueChange={(value: 'sql' | 'dump') => setFormat(value)}
+          >
+            <Select.Trigger className="w-full mb-4" />
 
-      {/* Format selector */}
-      <select
-        value={format}
-        onChange={(e) => setFormat(e.target.value as 'sql' | 'dump')}
-        className="border p-2 rounded mb-4 w-full"
-      >
-        <option value="sql">SQL (.sql)</option>
-        <option value="dump">Custom (.dump)</option>
-      </select>
+            <Select.Content>
+              <Select.Group>
+                <Select.Label>Select backup format</Select.Label>
+                <Select.Separator />
 
-      {/* Button */}
-      <button
-        onClick={handleDownload}
-        disabled={backupMutation.isPending}
-        className="bg-blue-500 text-white px-4 py-2 rounded w-full"
-      >
-        {backupMutation.isPending ? 'Creating Backup...' : 'Download Backup'}
-      </button>
-    </div>
+                <Select.Item value="sql">SQL (.sql)</Select.Item>
+                <Select.Item value="dump">Custom (.dump)</Select.Item>
+              </Select.Group>
+            </Select.Content>
+          </Select.Root>
+
+          <Button onClick={handleDownload} disabled={backupMutation.isPending}>
+            {backupMutation.isPending
+              ? 'Creating Backup...'
+              : 'Download Backup'}
+          </Button>
+        </div>
+      </Card>
+    </Box>
   );
 };
 

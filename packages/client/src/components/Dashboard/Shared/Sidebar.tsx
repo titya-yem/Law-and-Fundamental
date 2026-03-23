@@ -66,7 +66,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
                 Email: <Text>{data?.email}</Text>
               </Text>
               <Text as="p" className="text-sm">
-                Role:
+                Role:{' '}
                 <Text className="uppercase underline underline-offset-2">
                   {data?.role}
                 </Text>
