@@ -1,26 +1,23 @@
 import type { RequestHandler } from "express";
+import fs from "node:fs";
 import { backUpSchema } from "../validations/backup.validation";
 import { createBackup } from "../services/backup.service";
-import fs from "node:fs";
 
 export const downloadBackUp: RequestHandler = async (req, res) => {
-    try {
-        // validate query
-        const parsed = backUpSchema.parse(req.query);
-        const format = parsed.format || "sql";
+  try {
+    const { format } = backUpSchema.parse(req.query);
 
-        // create backup
-        const { filePath, fileName } = await createBackup(format);
+    const { filePath, fileName } = await createBackup(format);
 
-        // send file
-        res.download(filePath, fileName, (error) => {
-            if (error) console.log(error);
+    res.download(filePath, fileName, (error) => {
+      if (error) console.error("Download error:", error);
 
-            fs.unlinkSync(filePath);
-        });
-
-    } catch (error: any) {
-        console.error(error);
-    res.status(500).json({ message: "Backup failed" });
-    };
+      fs.unlink(filePath, (err) => {
+        if (err) console.error("Cleanup error:", err);
+      });
+    });
+  } catch (error) {
+    console.error("Backup error:", error);
+    if (!res.headersSent) res.status(500).json({ message: "Backup failed" });
+  }
 };

@@ -4,6 +4,6 @@ import { authenticate, authorizeAdmin } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/", authenticate, authorizeAdmin,downloadBackUp);
+router.get("/", authenticate, authorizeAdmin, downloadBackUp);
 
 export default router;
