@@ -61,8 +61,9 @@ export const login: RequestHandler = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,              // cannot be accessed by JS
             // secure must change to true in production
-            secure: false,               // true in production (HTTPS)
-            sameSite: "lax",             // protects againts CSRF
+            // true in production (HTTPS)
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",             // protects againts CSRF
             maxAge: 60 * 60 * 1000,      // 60 minutes
         })
 
