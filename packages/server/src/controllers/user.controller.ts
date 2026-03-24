@@ -54,7 +54,7 @@ export const login: RequestHandler = async (req, res) => {
                 role: user.role,
                 userName: user.name,
                 email: user.email
-            }, JWT_SERECT, { expiresIn: "2h"}
+            }, JWT_SERECT, { expiresIn: "1h"}
         )
 
         // store token in httpOnly cookie
@@ -64,6 +64,7 @@ export const login: RequestHandler = async (req, res) => {
             // true in production (HTTPS)
             secure: process.env.NODE_ENV === "production",
             sameSite: "none",             // protects againts CSRF
+            path: "/",
             maxAge: 60 * 60 * 1000,      // 60 minutes
         })
 
@@ -133,7 +134,8 @@ export const logout: RequestHandler = (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax"
+        sameSite: "none",
+        path: "/",
     });
     
     res.json({ message: "Logged out successfully"});

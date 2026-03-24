@@ -17,8 +17,10 @@ import ProtectedRoute from './lib/ProtectedRoute';
 import UsersDashboard from './pages/Dashboard/UsersDashboard';
 import Profile from './pages/Dashboard/Profile';
 import Backup from './pages/Dashboard/Backup';
+import axios from 'axios';
 
 const queryClient = new QueryClient();
+axios.defaults.withCredentials = true;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

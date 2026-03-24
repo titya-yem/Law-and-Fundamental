@@ -14,11 +14,15 @@ import BackUpRouter from "./src/routes/backup.route";
 const app = express();
 
 // middleware
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(cors({ 
+  origin: process.env.CLIENT_URL, 
+  credentials: true 
+}));
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(cookieParser());
+app.set("trust proxy", 1);
 
 // routes
 app.use("/api/auth", userRouter);
