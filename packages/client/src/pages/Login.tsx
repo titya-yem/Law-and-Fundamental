@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useRef } from 'react';
 import {
   Button,
@@ -9,7 +10,7 @@ import {
 } from '@radix-ui/themes';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios, { type AxiosError, type AxiosResponse } from 'axios';
+import axios, { type AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { loginProps, type LoginProps } from '@/types/LoginTypes';
 
@@ -18,25 +19,27 @@ const Login = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const queryClient = useQueryClient();
 
-  const loginMutation = useMutation<AxiosResponse, AxiosError, LoginProps>({
-    mutationFn: (data) =>
-      axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, data, {
-        withCredentials: true,
-      }),
+  const loginMutation = useMutation({
+    mutationFn: async (data: LoginProps) => {
+      return axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/login`,
+        data,
+        { withCredentials: true }
+      );
+    },
 
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Login successful 🎉');
       formRef.current?.reset();
 
-      // Refetch the authenticated user data
-      queryClient.invalidateQueries({ queryKey: ['me'] });
+      await queryClient.invalidateQueries({ queryKey: ['auth'] });
 
-      // Redirect to dashboard
       navigate('/', { replace: true });
     },
 
-    onError: (error) => {
-      toast.error(error.message ?? 'Login failed');
+    onError: (error: AxiosError<any>) => {
+      const message = error.response?.data?.message || 'Login failed ❌';
+      toast.error(message);
     },
   });
 
@@ -54,8 +57,8 @@ const Login = () => {
     const validation = loginProps.safeParse(payload);
 
     if (!validation.success) {
-      const errors = validation.error.issues.map((issue) => issue.message);
-      alert(errors.join('\n'));
+      const errors = validation.error.issues.map((i) => i.message);
+      toast.error(errors.join('\n'));
       return;
     }
 
@@ -63,14 +66,14 @@ const Login = () => {
   };
 
   return (
-    <Section size="3" className="px-4 flex items-center h-152.25 bg-slate-100">
+    <Section size="3" className="px-4 flex items-center h-screen bg-slate-100">
       <Container size="4">
         <Flex
           direction="column"
           align="center"
           className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto"
         >
-          <Heading size="6" weight="medium" className="text-center pb-2">
+          <Heading size="6" className="text-center pb-2">
             Welcome Back
           </Heading>
 
@@ -78,32 +81,28 @@ const Login = () => {
             Login to manage your legal cases
           </Text>
 
-          {loginMutation.isError && (
-            <Text size="2" className="text-red-600 text-center mb-2">
-              {loginMutation.error?.message ?? 'Login failed'}
-            </Text>
-          )}
-
           <form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 w-full pb-4"
+            className="flex flex-col gap-4 w-full"
           >
             <input
               type="email"
               name="email"
               placeholder="Email Address"
-              className="border rounded-md p-2 text-gray-700"
+              className="border rounded-md p-2"
+              required
             />
 
             <input
               type="password"
               name="password"
               placeholder="Password"
-              className="border rounded-md p-2 text-gray-700"
+              className="border rounded-md p-2"
+              required
             />
 
-            <Button type="submit" size="3" disabled={loginMutation.isPending}>
+            <Button type="submit" disabled={loginMutation.isPending}>
               {loginMutation.isPending ? 'Logging in...' : 'Login'}
             </Button>
           </form>
