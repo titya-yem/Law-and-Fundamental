@@ -46,10 +46,28 @@ createRoot(document.getElementById('root')!).render(
                 </ProtectedRoute>
               }
             >
+              {/* accessible by ALL users */}
               <Route index element={<Dashboard />} />
-              <Route path="users" element={<UsersDashboard />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="backup" element={<Backup />} />
+
+              {/* ONLY ADMIN */}
+              <Route
+                path="users"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <UsersDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="backup"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Backup />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -8,12 +8,38 @@ interface SidebarListsProps {
   img: string;
   label: string;
   link: string;
+  roles: ("admin" | "user")[];
 }
 
 export const sidebarLists: SidebarListsProps[] = [
-  { img: home, label: "Home", link: "/" },
-  { img: dashboard, label: "Dashboard", link: "/dashboard" },
-  { img: user, label: "Users", link: "/dashboard/users" },
-  { img: profile, label: "Profile", link: "/dashboard/profile" },
-  { img: backup, label: "Backup", link: "/dashboard/backup" },
+  {
+    img: home,
+    label: "Home",
+    link: "/",
+    roles: ["admin", "user"],
+  },
+  {
+    img: dashboard,
+    label: "Dashboard",
+    link: "/dashboard",
+    roles: ["admin", "user"],
+  },
+  {
+    img: user,
+    label: "Users",
+    link: "/dashboard/users",
+    roles: ["admin"],
+  },
+  {
+    img: profile,
+    label: "Profile",
+    link: "/dashboard/profile",
+    roles: ["admin", "user"],
+  },
+  {
+    img: backup,
+    label: "Backup",
+    link: "/dashboard/backup",
+    roles: ["admin"],
+  },
 ];

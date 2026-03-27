@@ -4,7 +4,9 @@ import axios from "axios";
 
 export interface User {
   id: number;
-  role: string;
+  role: "admin" | "user";
+  name?: string;
+  email?: string;
 }
 
 export const useAuth = () => {

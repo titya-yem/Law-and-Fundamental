@@ -63,7 +63,8 @@ export const login: RequestHandler = async (req, res) => {
             // secure must change to true in production
             // true in production (HTTPS)
             secure: process.env.NODE_ENV === "production",
-            sameSite: "none",             // protects againts CSRF
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            // sameSite: "none",             // protects againts CSRF
             path: "/",
             maxAge: 60 * 60 * 1000,      // 60 minutes
         })
@@ -133,8 +134,10 @@ export const logout: RequestHandler = (req, res) => {
 
     res.clearCookie("token", {
         httpOnly: true,
+        // secure: process.env.NODE_ENV === "production",
         secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
     });
     

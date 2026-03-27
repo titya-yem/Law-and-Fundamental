@@ -1,6 +1,3 @@
-import type { userType } from '@/types/UserTypes';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import Fetch from '../../Fetch';
 import { Box, Text } from '@radix-ui/themes';
 import logo from '@/assets/Logo.jpg';
@@ -8,6 +5,7 @@ import { sidebarLists } from '@/constants/SidebarLists';
 import logoutSVG from '@/assets/logout.svg';
 import { useLogout } from '@/hooks/useLogout';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 type Props = {
   isOpen: boolean;
@@ -15,21 +13,14 @@ type Props = {
 };
 
 const Sidebar = ({ isOpen, setIsOpen }: Props) => {
-  const { data, isLoading, isError } = useQuery<userType>({
-    queryKey: ['user'],
-    queryFn: async () => {
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/api/auth/me`,
-        { withCredentials: true }
-      );
-      return res.data;
-    },
-
-    staleTime: 1 * 60 * 1000, // 1 min
-    refetchOnWindowFocus: false,
-  });
-
+  const { data, isLoading, isError } = useAuth();
   const logout = useLogout();
+
+  const userRole = data?.role;
+
+  const filteredSidebar = sidebarLists.filter((item) =>
+    userRole ? item.roles.includes(userRole) : false
+  );
 
   if (isLoading || isError)
     return <Fetch isloading={isLoading} isError={isError} />;
@@ -75,7 +66,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
           </div>
 
           <Box className="space-y-2">
-            {sidebarLists.map(({ img, label, link }) => (
+            {filteredSidebar.map(({ img, label, link }) => (
               <NavLink
                 key={label}
                 to={link}
@@ -110,7 +101,7 @@ const Sidebar = ({ isOpen, setIsOpen }: Props) => {
 
         <button
           onClick={logout}
-          className="absolute bottom-6 left-4 w-73 flex gap-x-3 px-4 py-3 rounded-xl transition  hover:bg-gray-800 cursor-pointer"
+          className="absolute bottom-6 left-4 w-56 lg:w-73 flex gap-x-3 px-4 py-3 rounded-xl transition  hover:bg-gray-800 cursor-pointer"
         >
           <img src={logoutSVG} alt="logout svg" className="w-5 invert-100" />
           <Text as="p">Logout</Text>
